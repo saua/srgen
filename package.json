@@ -3,10 +3,10 @@
     "description": "A Shadowrun 4 character generator.",
     "author": "Joachim Sauer <saua@gmx.net>",
     "version": "0.1.0",
-    "license" : {
+    "licenses" : [ {
         "type": "MIT",
         "url": "https://raw.github.com/saua/srgen/master/LICENSE"
-    },
+    } ],
     "repository": "git://github.com/saua/srgen.git",
     "dependencies": {
         "coffee-script": "1.3.x",
