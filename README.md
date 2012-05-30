@@ -1,3 +1,3 @@
 # SRGEN
 
-A Shadowrun 4 Character generator.
+A Shadowrun 4 character generator.
