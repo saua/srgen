@@ -11,5 +11,11 @@
         "jasmine-node": "1.0.x",
         "eyes": "0.1.x"
     },
+    "bundledDependencies": [
+        "coffee-script",
+        "sax",
+        "jasmine-node",
+        "eyes"
+    ],
     "engine": "node 0.6.x"
 }
