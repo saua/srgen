@@ -35,6 +35,8 @@ read = (input) ->
     parser.onopentag = (tag) ->
         objects.push current
         current = {}
+        for own k,v of tag.attributes
+            applyValue(current, k, v)
         text = ""
         
     parser.ontext = (newText) ->
