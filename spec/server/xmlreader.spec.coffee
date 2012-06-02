@@ -6,7 +6,7 @@ expectResult = (input, expected) ->
     result = xmlreader.read xml
     expect(result).toEqual expected
 
-describe 'Frobnicator', ->
+describe 'XML Reader', ->
     describe 'error conditions', ->
         it 'throws on malformed XML', ->
             expect(-> xmlreader.read 'not XML').toThrow()
