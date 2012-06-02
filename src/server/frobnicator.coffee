@@ -13,6 +13,7 @@ frob = (object, spec) ->
 class Conversion
     convert: (input) -> input
     missing: (parent) -> null
+    toString: -> @constructor.name
             
         
 class ListToIndex extends Conversion
@@ -24,7 +25,7 @@ class ListToIndex extends Conversion
             if attr != @elementName
                 throw new Error "unexpected property #{attr} (only #{@elementName} expected)"
         if list not instanceof Array
-            throw new Error "expected array, got #{input}"
+            throw new Error "property #{@elementName} should be an array, is #{list}"
         result = {}
         for element in list
             if @id not of element
@@ -32,6 +33,9 @@ class ListToIndex extends Conversion
             idValue = element[@id]
             result[idValue] = element
         return result
+        
+    toString: ->
+        "#{super()}(#{@elementName}, #{@id})"
     
 exports.frob = frob
 

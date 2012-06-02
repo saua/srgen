@@ -22,3 +22,5 @@ describe 'Frobnicator', ->
         it 'throws if an element does not contain the correct key', ->
             input = foos: foo: [ { bar: true } ]
             expect(-> frob input, fooSpec).toThrow()
+        it 'has a useful toString()', ->
+            expect(f.listToIndex('el', 'id').toString()).toEqual('ListToIndex(el, id)')
