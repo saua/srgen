@@ -30,6 +30,7 @@
 *.sass text=auto
 *.less text=auto
 *.js text=auto
+*.coffee text=auto
 *.lisp text=auto
 *.clj text=auto
 *.sql text=auto
