@@ -45,6 +45,7 @@
 *.md text=auto
 *.gitattributes text=auto
 *.gitignore text=auto
+data/*.xml -text -eol
 
 *.csproj text=auto merge=union
 *.vbproj text=auto merge=union
