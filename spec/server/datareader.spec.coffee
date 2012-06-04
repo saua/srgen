@@ -1,4 +1,4 @@
-data = require '../../src/server/data'
+data = require '../../src/server/datareader'
 
 describe 'Data Reading', ->
     
