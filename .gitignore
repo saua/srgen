@@ -164,5 +164,6 @@ pip-log.txt
 # Mac crap
 .DS_Store
 
-# don't ignore bin directories in node_modules
+# don't ignore bin, dist, ... directories in node_modules
 !node_modules/**/bin
+!node_modules/**/dist
