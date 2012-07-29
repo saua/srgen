@@ -17,10 +17,13 @@
 		"jasmine-node": "1.0.x",
 		"eyes": "0.1.x"
 	},
-	"bundledDependencies": ["coffee-script",
-	"sax",
-	"jasmine-node",
-	"eyes"],
+	"bundledDependencies": [
+		"coffee-script",
+		"sax",
+		"jasmine-node",
+		"eyes",
+		"batman"
+	],
 	"scripts": {
 		"test": "node node_modules/jasmine-node/bin/jasmine-node --coffee spec"
 	},
