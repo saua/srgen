@@ -10,6 +10,7 @@
 	"repository": "git://github.com/saua/srgen.git",
 	"dependencies": {
 		"coffee-script": "1.3.x",
+		"batman": "0.11.x",
 		"sax": "0.4.x"
 	},
 	"devDependencies": {
