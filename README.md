@@ -1,6 +1,6 @@
 # SRGEN
 
-A Shadowrun 4 character generator.
+A Shadowrun 5 character generator.
 
 ## State
 
@@ -9,8 +9,9 @@ useful for any real use case.
 
 ## Data Files
 
-Data files (anything in the `data/` directory) from the excellent 
-[Chummer Project](http://chummergen.com/) are used with permission.
+Data files (anything in the `src/common/data/` directory) contain information
+from Shadowrun 5 source books. This data was simply brought into a machine readable
+format but not authored by me.
 Note that these data files are not copyrighted by me and are *not* released
 under the MIT license (which applies to the rest of the source code of this
 project).

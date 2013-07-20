@@ -26,6 +26,12 @@ local.properties
 Backup*/
 
 ############
+## NPM
+############
+
+./node_modules/
+
+############
 ## Windows
 ############
 
