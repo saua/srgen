@@ -26,6 +26,13 @@ local.properties
 Backup*/
 
 ############
+## IDEA
+############
+
+.idea
+*.iml
+
+############
 ## NPM
 ############
 

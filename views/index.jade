@@ -1,0 +1,16 @@
+!!! 5
+html(lang='en')
+head
+    title Shadowrun 5 Test
+    meta(charset='UTF-8')
+    != css('lib/css/bootstrap')
+body(ng-controller='ShadowrunController')
+    .container
+        h1 Shadowrun 5 Test
+        .span4(ng-repeat='attr in core.attribute.physicalMental')
+            label.span3(for='attribute-{{attr}}') {{text.attribute[attr]}}
+            attribute-editor.span3(id='#attribute-{{attr}}', attribute='attribute[attr]')
+
+        != js('lib/js/angular')
+        != js('lib/js/ui-bootstrap-tpls-0.4.0')
+        != js('client/app')
