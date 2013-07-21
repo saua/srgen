@@ -1,27 +1,28 @@
 {
-  "name": "srgen",
-  "description": "A Shadowrun 5 character generator.",
-  "author": "Joachim Sauer <saua@gmx.net>",
-  "version": "0.1.0",
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://raw.github.com/saua/srgen/master/LICENSE"
+    "name": "srgen",
+    "description": "A Shadowrun 5 character generator.",
+    "author": "Joachim Sauer <saua@gmx.net>",
+    "version": "0.1.0",
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://raw.github.com/saua/srgen/master/LICENSE"
+        }
+    ],
+    "repository": "git://github.com/saua/srgen.git",
+    "dependencies": {
+        "coffee-script": "~1.6.0",
+        "express": "~3.3.0",
+        "connect-assets": "~2.5.0",
+        "jade": "~0.33.0"
+    },
+    "devDependencies": {
+        "jasmine-node": "~1.10.0"
+    },
+    "scripts": {
+        "test": "node node_modules/jasmine-node/bin/jasmine-node --coffee spec/"
+    },
+    "engines": {
+        "node": "~0.10.0"
     }
-  ],
-  "repository": "git://github.com/saua/srgen.git",
-  "dependencies": {
-    "coffee-script": "~1.6.0",
-    "express": "~3.3.0",
-    "connect-assets": "~2.5.0"
-  },
-  "devDependencies": {
-      "jasmine-node": "~1.10.0"
-  },
-  "scripts": {
-      "test": "node node_modules/jasmine-node/bin/jasmine-node --coffee spec/"
-  },
-  "engines": {
-    "node": "~0.10.0"
-  }
 }
