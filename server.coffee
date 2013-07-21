@@ -20,6 +20,6 @@ app.configure 'development', ->
   app.use express.errorHandler()
   app.locals.pretty = true
 
-app.listen 8000
-
-console.log 'Server listening.'
+port = process.env.PORT || 8000;
+app.listen port, ->
+  console.log "Listening on #{port}"
