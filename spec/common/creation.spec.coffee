@@ -1,13 +1,13 @@
 cr = require '../../src/common/creation'
 
 describe 'Creation', ->
-  cr = null
+  c = null
 
   beforeEach ->
-    cr = new cr.Creation
+    c = new cr.Creation
 
   it 'starts out with an empty char', ->
-    expect(cr.character).toBeDefined()
-    expect(cr.character.name).toBe null
-    expect(cr.char.attributes.bod).toBeDefined()
-    expect(cr.character.attributes.bod.value).toBe Null
+    expect(c.char).toBeDefined()
+    expect(c.char.name).toBe null
+    expect(c.char.attributes.bod).toBeDefined()
+    expect(c.char.attributes.bod.value.value).toBe null

@@ -1,10 +1,9 @@
-# a very primitive jsonPath implementation, capable of only what I needed. Not tested for anything else
-# specifically, this can only ever return a single object
-# the advantage is that it always returns exactly the matched object and not a copy of it
-
 # just to catch any fault use of require() in the client or common code
 @require ?= -> throw Error 'require can not be used on the client side'
 
+# a very primitive "jsonPath" implementation, capable of only what I needed. Not tested for anything else
+# specifically, this can only ever return a single object
+# the advantage is that it always returns exactly the matched object and not a copy of it
 getPath = (obj, path) ->
   segments = path.split '.'
   result = obj
@@ -78,7 +77,6 @@ class EffectsProvider
       value = getPath root, key
       value.removeEffect effect
     return # avoid building an array
-
 
 do (exports = exports ? @basetypes = {}) ->
   exports.Effect = Effect

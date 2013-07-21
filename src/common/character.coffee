@@ -5,7 +5,7 @@ basetypes = @basetypes ? require('./basetypes')
 
 copy = (obj) ->
   if Array.isArray(obj)
-    result = copy(e) for e in obj
+    result = (copy(e) for e in obj)
   else if typeof obj == 'object'
     result = {}
     for own key, value of obj
@@ -51,7 +51,7 @@ class Character
     @metatype = new Metatype(metatype)
     @metatype.applyEffects(@)
 
-do (exports = exports ? @char = {}) ->
+do (exports = exports ? @character = {}) ->
   exports.Metatype = Metatype
   exports.Attribute = Attribute
   exports.Attributes = Attributes

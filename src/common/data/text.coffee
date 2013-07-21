@@ -35,5 +35,8 @@ text.ui =
   namePlaceholder: 'Enter a character name'
   metatype: 'Metatype'
 
-do (exports = exports ? this) ->
-  exports.text = text
+if typeof exports != 'undefined'
+  for k,v of text
+    exports[k] = v
+else
+  @text = text

@@ -1,9 +1,9 @@
-#= ./character
-char = @char ? require('./character')
+#= require ./character
+character = @character ? require('./character')
 
 class Creation
   constructor: ->
-    @char = new char.Character
+    @char = new character.Character
 
   setMetatype: (name) ->
     @char.setMetatype name

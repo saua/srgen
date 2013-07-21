@@ -114,5 +114,8 @@ core.creation =
         D: 50000
         E: 6000
 
-do (exports = exports ? this) ->
-  exports.core = core
+if typeof exports != 'undefined'
+  for k,v of core
+    exports[k] = v
+else
+  @core = core
