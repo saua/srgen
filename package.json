@@ -15,6 +15,12 @@
     "express": "~3.3.0",
     "connect-assets": "~2.5.0"
   },
+  "devDependencies": {
+      "jasmine-node": "~1.10.0"
+  },
+  "scripts": {
+      "test": "node node_modules/jasmine-node/bin/jasmine-node --coffee spec/"
+  },
   "engines": {
     "node": "~0.10.0"
   }

@@ -1,34 +1,40 @@
 core = {}
 
-core.attribute =
+core.attributes =
   physical: ['bod', 'agi', 'rea', 'str']
   mental: ['wil', 'log', 'int', 'cha']
   special: ['ess', 'edg', 'mag', 'res']
 
-core.attribute.physicalMental = core.attribute.physical.concat(core.attribute.mental)
+# the basic physical and mental attributes
+core.attributes.physicalMental = core.attributes.physical.concat(core.attributes.mental)
+# attributes that every character/being has
+core.attributes.universal = core.attributes.physicalMental.concat('ess', 'edg')
 
 limitsForMax = (obj)->
   for attr, val of obj
     obj[attr] =
       min: Math.max(1,val-5)
       max: val
+  obj['ess'] =
+    max: 6
   return obj
 
+core.metatypes = ['human', 'elf', 'dwarf', 'ork', 'troll']
 core.metatype =
   human:
-    attribute: limitsForMax bod:6, agi:6, rea:6, str:6, wil:6, log:6, int:6, cha:6, edg:7
+    attributes: limitsForMax bod:6, agi:6, rea:6, str:6, wil:6, log:6, int:6, cha:6, edg:7
     racial: []
   elf:
-    attribute: limitsForMax bod:6, agi:7, rea:6, str:6, wil:6, log:6, int:6, cha:8, edg:6
+    attributes: limitsForMax bod:6, agi:7, rea:6, str:6, wil:6, log:6, int:6, cha:8, edg:6
     racial: ['Low-Light Vision']
   dwarf:
-    attribute: limitsForMax bod:8, agi:6, rea:5, str:8, wil:7, log:6, int:6, cha:6, edg:6
+    attributes: limitsForMax bod:8, agi:6, rea:5, str:8, wil:7, log:6, int:6, cha:6, edg:6
     racial: ['+2 dice for pathogen and toxin resistance', '+20% increased Lifestyle cost']
   ork:
-    attribute: limitsForMax bod:9, agi:6, rea:6, str:8, wil:6, log:5, int:6, cha:5, edg:6
+    attributes: limitsForMax bod:9, agi:6, rea:6, str:8, wil:6, log:5, int:6, cha:5, edg:6
     racial: ['Low-Light Vision']
   troll:
-    attribute: limitsForMax bod:10, agi:5, rea:6, str:10, wil:6, log:5, int:5, cha:4, edg:6
+    attributes: limitsForMax bod:10, agi:5, rea:6, str:10, wil:6, log:5, int:5, cha:4, edg:6
     racial: ['Thermographic Vision', '+1 Reach', '+1 dermal armor', '+100% increased Lifestyle costs']
 
 core.creation =
@@ -108,4 +114,5 @@ core.creation =
         D: 50000
         E: 6000
 
-(exports ? this).core = core
+do (exports = exports ? this) ->
+  exports.core = core

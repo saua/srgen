@@ -6,10 +6,43 @@ head
     != css('lib/css/bootstrap')
 body(ng-controller='ShadowrunController')
     .container
-        h1 Shadowrun 5 Test
-        .span4(ng-repeat='attr in core.attribute.physicalMental')
-            label.span3(for='attribute-{{attr}}') {{text.attribute[attr]}}
-            attribute-editor.span3(id='#attribute-{{attr}}', attribute='attribute[attr]')
+        h1 {{char.name || text.ui.unnamedCharacter }}
+        tabset
+            tab(heading='General')
+                form
+                    label {{text.ui.name}}
+                    input(ng-model='char.name', type='text', placeholder='{{text.ui.namePlaceholder}}')
+                    label {{text.ui.metatype}}
+                    select(ng-model='char.metatype.name', ng-options='name as text.metatype[name] for name in core.metatypes', ng-change='char.setMetatype(char.metatype.name)')
+                table.table
+                    thead
+                        tr
+                            td
+                            th Value
+                            th Limits
+                            th Debug
+                    tbody
+                        tr(ng-repeat='name in core.attributes.physicalMental')
+                            th {{text.attributes[name]}}
+                            td {{char.attributes[name].value.value}}
+                            td {{char.attributes[name].min.value}}/{{char.attributes[name].max.value}}
+                        tr
+                            th {{text.attributes['ess']}}
+                            td
+                            td {{char.attributes['edg'].max.value}}
+                        tr
+                            th {{text.attributes['edg']}}
+                            td {{char.attributes['edg'].value.value}}
+                            td {{char.attributes['edg'].min.value}}/{{char.attributes['edg'].max.value}}
+            tab(heading='Debug')
+                table.table
+                    tbody
+                        tr
+                            th creation
+                            td {{creation}}
+                        tr
+                            th char
+                            td {{char}}
 
         != js('lib/js/angular')
         != js('lib/js/ui-bootstrap-tpls-0.4.0')

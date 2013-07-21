@@ -1,6 +1,6 @@
 text = {}
 
-text.attribute =
+text.attributes =
   bod: 'Body'
   agi: 'Agility'
   rea: 'Reaction'
@@ -29,4 +29,11 @@ text.creation =
     skills: 'Skills'
     resources: 'Resources'
 
-(exports ? this).text = text
+text.ui =
+  unnamedCharacter: 'Unnamed Character'
+  name: 'Name'
+  namePlaceholder: 'Enter a character name'
+  metatype: 'Metatype'
+
+do (exports = exports ? this) ->
+  exports.text = text
