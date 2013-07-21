@@ -5,6 +5,11 @@ head
     meta(charset='UTF-8')
     != css('lib/css/bootstrap')
 body(ng-controller='ShadowrunController')
+    .navbar.navbar-static-top
+        .navbar-inner
+            .container
+                .brand SRGen
+
     .container
         h1 {{char.name || text.ui.unnamedCharacter }}
         tabset
@@ -34,6 +39,7 @@ body(ng-controller='ShadowrunController')
                             th {{text.attributes['edg']}}
                             td {{char.attributes['edg'].value.value}}
                             td {{char.attributes['edg'].min.value}}/{{char.attributes['edg'].max.value}}
+            tab(heading='Magic', disabled='"true"')
             tab(heading='Debug')
                 table.table
                     tbody
