@@ -65,9 +65,9 @@ class Creation
 
 
   applyState: (state) ->
-    @setMetatype state.metatype
+    @setMetatype state.metatype if state.metatype
     for aspect, prio of state.priority
-      if prio then @setPriority aspect, prio
+      @setPriority aspect, prio if prio
     @char.name = state.name
 
 do (exports = exports ? @creation = {}) ->
