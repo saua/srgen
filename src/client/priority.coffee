@@ -1,17 +1,21 @@
 #= require ../common/creation
-#= require ../common/data/text
 
-global = @
-text = global.text
+creation = @creation
+localStorage = @localStorage
 
-module = angular.module 'srgen.priority', []
+module = angular.module 'srgen.priority', ['srgen.data']
 
-module.directive 'priorityTable', [ ->
+module.directive 'priorityTable', [ 'core', 'text', (core, text) ->
   restrict: 'E',
   templateUrl: '/partial/priorityTable'
+  scope: {
+    creation: '='
+  }
   link: (scope, elem, attr) ->
+    scope.cprio = core.creation.priority
+    scope.tprio = text.creation.priority
     countPrio = (p) ->
-      prio = scope.$eval 'prio'
+      prio = scope.creation.priority
       count = 0
       for k,v of prio
         count++ if p==v
@@ -23,15 +27,15 @@ module.directive 'priorityTable', [ ->
       countPrio(p) > 1
 ]
 
-module.directive 'prioTableMetatype', ['$parse', ($parse) ->
+module.directive 'prioTableMetatype', ['$parse', 'core', ($parse, core) ->
   link: (scope, elem, attr) ->
     obj = $parse(attr.obj)(scope)
-    for mt in global.core.metatypes
+    for mt in core.metatypes
       if mt of obj then elem.append "<div>#{text.metatype[mt]} (#{obj[mt]})</div>"
     return
 ]
 
-module.directive 'prioTableMagic', ['$parse', ($parse) ->
+module.directive 'prioTableMagic', ['$parse', 'text', ($parse, text) ->
   pt = text.creation.priority
   append = (first, second) ->
     if first and second
@@ -50,7 +54,7 @@ module.directive 'prioTableMagic', ['$parse', ($parse) ->
   attr = (obj) ->
     for a in ['mag', 'res']
       if a of obj
-        return "#{global.text.attributes[a]} #{obj[a]}"
+        return "#{text.attributes[a]} #{obj[a]}"
 
   skills = (obj) ->
     result = ''
@@ -104,25 +108,21 @@ module.directive 'prioTableSkills', ['$parse', ($parse) ->
     elem.append "#{obj.skills} (#{obj.skillGroups})"
 ]
 
-module.controller 'PriorityCreationController', ['$scope', ($scope) ->
-  $scope.core = global.core
-  $scope.text = global.text
-  $scope.priority = global.core.creation.priority
-  $scope.creation = new global.creation.Creation
-  creationState = global.localStorage.getItem('creation')
+module.controller 'PriorityCreationController', ['$scope', 'core', ($scope, core) ->
+  $scope.priority = core.creation.priority
+  $scope.creation = new creation.Creation
+  creationState = localStorage.getItem('creation')
   if creationState?
     $scope.creation.applyState(angular.fromJson(creationState))
   else
     $scope.creation.setMetatype 'human'
   $scope.char = $scope.creation.char
   $scope.prio = angular.copy $scope.creation.priority
-  $scope.$watch 'prio', ->
-    for aspect, prio of $scope.prio
-      $scope.creation.setPriority aspect, prio if prio
-    return
+  $scope.$watch 'creation.priority', ->
+    $scope.creation.applyPriorities()
   , true
   $scope.$watch 'creation', ->
     creationState = $scope.creation.exportState()
-    global.localStorage.setItem('creation', angular.toJson(creationState))
+    localStorage.setItem('creation', angular.toJson(creationState))
   , true
 ]

@@ -60,6 +60,14 @@ text.ui =
   name: 'Name'
   namePlaceholder: 'Enter a character name'
   metatype: 'Metatype'
+  tab:
+    characterGeneration: 'Character Generation'
+    attributes: 'Attributes'
+    magicOrResonance: 'Magic or Resonance'
+    magic: 'Magic'
+    resonance: 'Resonance'
+
+
 
 text.fn =
   smallNum: (n) ->

@@ -1,0 +1,19 @@
+table.table.table-striped.table-hover
+    thead
+        tr
+            td
+            th Value
+            th Limits
+    tbody
+        tr(ng-repeat='name in core.attributes.physicalMental')
+            th {{text.attributes[name]}}
+            td {{char.attributes[name].value.value}}
+            td {{char.attributes[name].min.value}}/{{char.attributes[name].max.value}}
+        tr
+            th {{text.attributes['ess']}}
+            td
+            td {{char.attributes['ess'].max.value}}
+        tr
+            th {{text.attributes['edg']}}
+            td {{char.attributes['edg'].value.value}}
+            td {{char.attributes['edg'].min.value}}/{{char.attributes['edg'].max.value}}
