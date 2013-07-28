@@ -16,6 +16,9 @@ img 'lib/img/glyphicons-halflings.png'
 app.get '/', (req, res) ->
   res.render 'index'
 
+app.get '/partial/:partial', (req, res) ->
+  res.render "partial/#{req.params.partial}"
+
 app.configure 'development', ->
   app.use express.errorHandler()
   app.locals.pretty = true

@@ -1,0 +1,28 @@
+table.table.priority-table(ng-init='tp = text.creation.priority')
+    thead
+        tr
+            th {{tp.priority}}
+            th(ng-repeat='aspect in priority.aspects') {{tp.aspect[aspect]}}
+    tbody
+        tr(ng-repeat='p in priority.priorities', ng-class='{ info: priorityUnused(p), error: priorityOverused(p) }' )
+            td {{p}}
+            td
+                div.control-group.radio
+                    input.form-control(type='radio', name='metatype', id='metatype_{{p}}', value='{{p}}', ng-model='prio.metatype')
+                    label.control-label(for='metatype_{{p}}', prio-table-metatype, obj='priority.aspect.metatype[p]')
+            td
+                div.control-group.radio
+                    input.form-control(type='radio', name='attributes', id='attributes_{{p}}', value='{{p}}', ng-model='prio.attributes')
+                    label.control-label(for='attributes_{{p}}') {{priority.aspect.attributes[p]}}
+            td
+                div.control-group.radio
+                    input.form-control(type='radio', name='magic', id='magic_{{p}}', value='{{p}}', ng-model='prio.magic')
+                    label.control-label(for='magic_{{p}}', prio-table-magic, obj='priority.aspect.magic[p]')
+            td
+                div.control-group.radio
+                    input.form-control(type='radio', name='skills', id='skills_{{p}}', value='{{p}}', ng-model='prio.skills')
+                    label.control-label(for='skills_{{p}}', prio-table-skills, obj='priority.aspect.skills[p]')
+            td
+                div.control-group.radio
+                    input(type='radio', name='resources', id='resources_{{p}}', value='{{p}}', ng-model='prio.resources')
+                    label.control-label(for='resources_{{p}}') {{priority.aspect.resources[p] | currency:'¥'}}

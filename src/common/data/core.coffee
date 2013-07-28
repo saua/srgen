@@ -40,7 +40,8 @@ core.metatype =
 core.creation =
   priority:
     priorities: ['A', 'B', 'C', 'D', 'E']
-    aspects:
+    aspects: ['metatype', 'attributes', 'magic', 'skills', 'resources']
+    aspect:
       metatype:
         A: human: 9, elf: 8, dwarf: 7, ork: 7, troll: 5
         B: human: 7, elf: 6, dwarf: 4, ork: 4, troll: 0
@@ -53,60 +54,60 @@ core.creation =
         C: 16
         D: 14
         E: 12
-      magicOrResonance:
+      magic:
         A:
           magician:
-            magic: 6
-            magicSkills: [5, 5]
-            spells: 10
+            mag: 6
+            magSkill: [5, 5]
+            spell: 10
           technomancer:
-            resonance: 6
-            resonanceSkills: [5, 5]
-            complexForms: 5
+            res: 6
+            resSkill: [5, 5]
+            complexForm: 5
         B:
           magician:
-            magic: 4
-            magicSkills: [4, 4]
-            spells: 7
+            mag: 4
+            magSkill: [4, 4]
+            spell: 7
           technomancer:
-            resonance: 4
-            resonanceSkills: [4, 4]
-            complexForms: 2
+            res: 4
+            resSkill: [4, 4]
+            complexForm: 2
           adept:
-            magic: 6
-            activSkill: [4]
+            mag: 6
+            activeSkill: [4]
           aspectedMagician:
-            magic: 5
-            magicSkillGroup: [4]
+            mag: 5
+            magSkillGroup: [4]
         C:
           magician:
-            magic: 3
-            magicSkills: []
-            spells: 5
+            mag: 3
+            magSkill: []
+            spell: 5
           technomancer:
-            resonance: 3
-            resonanceSkills: []
-            complexForms: 1
+            res: 3
+            resSkill: []
+            complexForm: 1
           adept:
-            magic: 4
-            activSkill: [2]
+            mag: 4
+            activeSkill: [2]
           aspectedMagician:
-            magic: 3
-            magicSkillGroup: [2]
+            mag: 3
+            magSkillGroup: [2]
         D:
           adept:
-            magic: 2
+            mag: 2
             activeSkill: []
           aspectedMagician:
-            magic: 2
-            magicSkillGroup: []
+            mag: 2
+            magSkillGroup: []
         E: {}
       skills:
-        A: skillPoints: 46, skillgroupPoints: 10
-        B: skillPoints: 36, skillgroupPoints: 5
-        C: skillPoints: 28, skillgroupPoints: 2
-        D: skillPoints: 22, skillgroupPoints: 0
-        E: skillPoints: 18, skillgroupPoints: 0
+        A: skills: 46, skillGroups: 10
+        B: skills: 36, skillGroups: 5
+        C: skills: 28, skillGroups: 2
+        D: skills: 22, skillGroups: 0
+        E: skills: 18, skillGroups: 0
       resources:
         A: 450000
         B: 275000
@@ -114,7 +115,7 @@ core.creation =
         D: 50000
         E: 6000
 
-if typeof exports != 'undefined'
+if exports?
   for k,v of core
     exports[k] = v
 else

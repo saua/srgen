@@ -4,21 +4,42 @@ head
     title Shadowrun 5 Test
     meta(charset='UTF-8')
     != css('lib/css/bootstrap')
-body(ng-controller='ShadowrunController')
+    != css('lib/css/app')
+body
     .navbar.navbar-static-top
         .navbar-inner
             .container
                 .brand SRGen
 
-    .container(style='display:none', ng-show='true')
+    .container.ng-cloak(ng-cloak, ng-controller='PriorityCreationController')
         h1 {{char.name || text.ui.unnamedCharacter }}
         tabset
+            tab(heading='Priorities')
+                h2 Available Points
+                table.table(ng-init="types =['specialAttributes', 'attributes', 'skills', 'skillGroups', 'karma']")
+                    thead
+                        tr
+                            td
+                            th Special Attributes
+                            th Attributes
+                            th Skills
+                            th Skill Groups
+                            th Karma
+                    tbody
+                        tr
+                            th Available
+                            td(ng-repeat='type in types') {{creation.points[type].available}}
+                        tr
+                            th Used
+                            td(ng-repeat='type in types', ng-class="{ info: 'creation.points[type].used < creation.points[type].available' }") {{creation.points[type].used}}
+                h2 Priorities
+                priority-table
             tab(heading='General')
                 form
                     label {{text.ui.name}}
                     input(ng-model='char.name', type='text', placeholder='{{text.ui.namePlaceholder}}')
                     label {{text.ui.metatype}}
-                    select(ng-model='char.metatype.name', ng-options='name as text.metatype[name] for name in core.metatypes', ng-change='char.setMetatype(char.metatype.name)')
+                    select(ng-model='char.metatype.name', ng-options='name as text.metatype[name] for name in core.metatypes', ng-change='creation.setMetatype(char.metatype.name)')
                 table.table
                     thead
                         tr
@@ -38,13 +59,15 @@ body(ng-controller='ShadowrunController')
                             th {{text.attributes['edg']}}
                             td {{char.attributes['edg'].value.value}}
                             td {{char.attributes['edg'].min.value}}/{{char.attributes['edg'].max.value}}
-            tab(heading='Magic', disabled='"true"')
             tab(heading='Debug')
                 table.table
                     tbody
                         tr
                             th creation
                             td {{creation}}
+                        tr
+                            th creation.points
+                            td {{creation.points}}
                         tr
                             th char
                             td {{char}}

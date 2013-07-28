@@ -1,9 +1,10 @@
+#= require ./priority
 #= require ../common/character
 #= require ../common/creation
 #= require ../common/data/text
 
 global = @
-main = angular.module "main", ["ui.bootstrap"]
+main = angular.module 'srgen', ['srgen.priority', 'ui.bootstrap']
 main.directive "attributeEditor", () ->
   restrict: 'E'
   replace: true
@@ -25,12 +26,4 @@ main.directive "attributeEditor", () ->
     $element.find('input').attr('id', $attrs.id)
     $element.removeAttr 'id'
 
-main.controller "ShadowrunController", ["$scope", ($scope) ->
-  $scope.core = global.core
-  $scope.text = global.text
-  $scope.creation = new global.creation.Creation
-  $scope.char = $scope.creation.char
-  $scope.creation.setMetatype 'human'
-]
-
-angular.bootstrap document, ["main"]
+angular.bootstrap document, ["srgen"]
