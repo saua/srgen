@@ -118,8 +118,8 @@ module.controller 'PriorityCreationController', ['$scope', ($scope) ->
   $scope.prio = angular.copy $scope.creation.priority
   $scope.$watch 'prio', ->
     for aspect, prio of $scope.prio
-      $scope.creation.setPriority(aspect, prio)
-      console.log $scope.$eval('creation.points.skills.available')
+      $scope.creation.setPriority aspect, prio if prio
+    return
   , true
   $scope.$watch 'creation', ->
     creationState = $scope.creation.exportState()
