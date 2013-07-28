@@ -40,7 +40,7 @@ core.metatype =
 core.creation =
   priority:
     priorities: ['A', 'B', 'C', 'D', 'E']
-    asspects:
+    aspects:
       metatype:
         A: human: 9, elf: 8, dwarf: 7, ork: 7, troll: 5
         B: human: 7, elf: 6, dwarf: 4, ork: 4, troll: 0
