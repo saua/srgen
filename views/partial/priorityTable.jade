@@ -4,25 +4,25 @@ table.table.table-hover.priority-table
             th {{tprio.priority}}
             th(ng-repeat='aspect in cprio.aspects') {{tprio.aspect[aspect]}}
     tbody
-        tr(ng-repeat='p in cprio.priorities', ng-class='{ info: priorityUnused(p), error: priorityOverused(p) }' )
+        tr(ng-repeat='p in cprio.priorities', ng-class='{ warning: priorityUnused(p), danger: priorityOverused(p) }' )
             td {{p}}
             td
-                div.control-group.radio
-                    input.form-control(type='radio', name='metatype', id='metatype_{{p}}', value='{{p}}', ng-model='creation.priority.metatype')
-                    label.control-label(for='metatype_{{p}}', prio-table-metatype, obj='cprio.aspect.metatype[p]')
+                div.radio
+                    input(type='radio', name='metatype', id='metatype_{{p}}', value='{{p}}', ng-model='creation.priority.metatype')
+                    label(for='metatype_{{p}}', prio-table-metatype, obj='cprio.aspect.metatype[p]')
             td
-                div.control-group.radio
-                    input.form-control(type='radio', name='attributes', id='attributes_{{p}}', value='{{p}}', ng-model='creation.priority.attributes')
-                    label.control-label(for='attributes_{{p}}') {{cprio.aspect.attributes[p]}}
+                div.radio
+                    input(type='radio', name='attributes', id='attributes_{{p}}', value='{{p}}', ng-model='creation.priority.attributes')
+                    label(for='attributes_{{p}}') {{cprio.aspect.attributes[p]}}
             td
-                div.control-group.radio
-                    input.form-control(type='radio', name='magic', id='magic_{{p}}', value='{{p}}', ng-model='creation.priority.magic')
-                    label.control-label(for='magic_{{p}}', prio-table-magic, obj='cprio.aspect.magic[p]')
+                div.radio
+                    input(type='radio', name='magic', id='magic_{{p}}', value='{{p}}', ng-model='creation.priority.magic')
+                    label(for='magic_{{p}}', prio-table-magic, obj='cprio.aspect.magic[p]')
             td
-                div.control-group.radio
-                    input.form-control(type='radio', name='skills', id='skills_{{p}}', value='{{p}}', ng-model='creation.priority.skills')
-                    label.control-label(for='skills_{{p}}', prio-table-skills, obj='cprio.aspect.skills[p]')
+                div.radio
+                    input(type='radio', name='skills', id='skills_{{p}}', value='{{p}}', ng-model='creation.priority.skills')
+                    label(for='skills_{{p}}', prio-table-skills, obj='cprio.aspect.skills[p]')
             td
-                div.control-group.radio
+                div.radio
                     input(type='radio', name='resources', id='resources_{{p}}', value='{{p}}', ng-model='creation.priority.resources')
-                    label.control-label(for='resources_{{p}}') {{cprio.aspect.resources[p] | currency:'¥'}}
+                    label(for='resources_{{p}}') {{cprio.aspect.resources[p] | currency:'¥'}}
