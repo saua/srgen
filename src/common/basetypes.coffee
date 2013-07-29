@@ -13,32 +13,16 @@ getPath = (obj, path) ->
 
 class Effect
   constructor: () ->
-  checkApply: (Value) ->
+  checkApply: (target) ->
     true
-  apply: (Value) ->
+  apply: (target) ->
     throw new Error 'apply method must be implemented!'
+  unApply: (target) ->
+    return # most effects don't need to do anything here
 
-class InitialValue extends Effect
-  constructor: (@value) ->
-  apply: (value) ->
-    if value.value != null
-      throw new Error 'can not set initial value twice!'
-    value.value = @value
-
-class ModValue extends Effect
-  constructor: (@mod) ->
-  apply: (value) ->
-    if value.value == null
-      throw new Error 'can not apply modified without initial value'
-    value.value += @mod
-
-class Value
+class EffectTarget
   constructor: () ->
-    @value = null
     @effects = []
-
-  toString: () ->
-    "(#{@value} #{@prototype})"
 
   addEffect: (effect) ->
     effect.checkApply(@)
@@ -57,6 +41,29 @@ class Value
     for e in @effects
       e.apply this
     return # avoid building an array
+
+
+class InitialValue extends Effect
+  constructor: (@value) ->
+  apply: (target) ->
+    if target.value != null
+      throw new Error 'can not set initial value twice!'
+    target.value = @value
+
+class ModValue extends Effect
+  constructor: (@mod) ->
+  apply: (target) ->
+    if target.value == null
+      throw new Error 'can not apply modified without initial value'
+    target.value += @mod
+
+class Value extends EffectTarget
+  constructor: () ->
+    @value = null
+    @effects = []
+
+  toString: () ->
+    "(#{@value})"
 
 class EffectsProvider
   constructor: () ->
@@ -80,6 +87,7 @@ class EffectsProvider
 
 do (exports = exports ? @basetypes = {}) ->
   exports.Effect = Effect
+  exports.EffectTarget = EffectTarget
   exports.ModValue = ModValue
   exports.InitialValue = InitialValue
   exports.Value = Value

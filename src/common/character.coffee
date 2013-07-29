@@ -32,24 +32,79 @@ class Attribute
     @max = new basetypes.Value
     @value = new basetypes.Value
 
-class Attributes
+class Attributes extends basetypes.EffectTarget
   constructor: ->
+    super
     for attr in core.attributes.universal
       @addAttribute attr
 
   addAttribute: (attr) ->
     @[attr] = new Attribute
 
+  @removeAttribute: (attr) ->
+    delete @[attr]
+
+class AddAttributeEffect extends basetypes.Effect
+  constructor: (@attr) ->
+
+  apply: (attributes) ->
+    attributes.addAttribute @attr
+
+  unApply: (attributes) ->
+    attributes.removeAttribute @attr
+
+class MagicType extends basetypes.EffectsProvider
+  @magicTypes = {}
+  @registerMagicType: (subtype) ->
+    @magicTypes[subtype.magicType] = subtype
+  @get: (name) ->
+    return null if not name
+    namedType = @magicTypes[name]
+    return new namedType
+
+  constructor: ->
+    super
+    @name = @.constructor.magicType
+    @effects["attributes"] = new AddAttributeEffect('mag')
+    @effects["attributes.mag.value"] = new basetypes.InitialValue 0
+
+class Adept extends MagicType
+  @magicType = 'adept'
+  MagicType.registerMagicType(@)
+  constructor: ->
+    super
+
+class Magician extends MagicType
+  @magicType = 'magician'
+  MagicType.registerMagicType(@)
+  constructor: ->
+    super
+
+class AspectedMagician extends MagicType
+  @magicType = 'aspectedMagician'
+  MagicType.registerMagicType(@)
+  constructor: ->
+    super
+
 class Character
   constructor: ->
     @name = null
     @metatype = null
+    @magicType = null
+    @resonanceType = null
     @attributes = new Attributes
 
   setMetatype: (metatype) ->
+    newMetaType = new Metatype(metatype)
     @metatype?.unApplyEffects(@)
-    @metatype = new Metatype(metatype)
+    @metatype = newMetaType
     @metatype.applyEffects(@)
+
+  setMagicType: (magicType) ->
+    newMagicType =  MagicType.get(magicType)
+    @magicType?.unApplyEffects(@)
+    @magicType = newMagicType
+    @magicType?.applyEffects(@)
 
 do (exports = exports ? @character = {}) ->
   exports.Metatype = Metatype

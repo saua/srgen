@@ -9,6 +9,10 @@ table.table.table-striped.table-hover.attribute-table
             th {{text.attributes[name]}}
             td {{char.attributes[name].value.value}}
             td {{char.attributes[name].min.value}}/{{char.attributes[name].max.value}}
+        tr(ng-repeat="name in ['mag','res']")
+            th {{text.attributes[name]}}
+            td {{char.attributes[name].value.value}}
+            td {{char.attributes[name].max.value}}
         tr
             th {{text.attributes['ess']}}
             td

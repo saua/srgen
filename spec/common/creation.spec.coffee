@@ -31,7 +31,31 @@ describe 'Priority Creation', ->
       expect(c.points.attributes.available).toBe 20
 
   describe 'Magic', ->
-    # TODO
+    beforeEach ->
+      c = new cr.Creation
+      c.setPriority 'magic', 'B'
+
+    it 'does not give magic or resonance without magic selection', ->
+      expect(c.char.attributes.mag).toBeUndefined()
+      expect(c.char.attributes.res).toBeUndefined()
+
+    it 'gives 4 magic when selecting magician on priority B', ->
+      c.setMagicType 'magician'
+      expect(c.char.attributes.mag.value.value).toBe 4
+
+    it 'gives 6 magic when selecting adept on priority B', ->
+      c.setMagicType 'adept'
+      expect(c.char.attributes.mag.value.value).toBe 6
+
+    it 'gives 5 magic when selecting aspected magician on priority B', ->
+      c.setMagicType 'aspectedMagician'
+      expect(c.char.attributes.mag.value.value).toBe 5
+
+  describe 'Resonance', ->
+# TODO implement resonance
+#    it 'gives 4 resonance when selecting technomancer on priority B', ->
+#      c.setResonanceType 'technomancer'
+#      expect(c.char.attributes.res.value.value).toBe 4
 
   describe 'Skills', ->
     it 'does not give skill points without priority', ->
@@ -76,3 +100,8 @@ describe 'Priority Creation', ->
       c.setMetatype 'human'
       reloadState()
       expect(c.metatype).toBe 'human'
+
+    it 'remembers the magicType', ->
+      c.setMagicType 'adept'
+      reloadState()
+      expect(c.char.magicType.name).toBe 'adept'

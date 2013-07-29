@@ -1,7 +1,10 @@
 #= require ./character
 #= require ./data/core
+#= require ./basetypes
 character = @character ? require './character'
 core = @core ? require './data/core'
+basetypes = @basetypes ? require './basetypes'
+
 cp = core.creation.priority
 
 class Creation
@@ -35,6 +38,10 @@ class Creation
     @priority[aspect] = priority
     @applyPriorities()
 
+  setMagicType: (magicType) ->
+    @char.setMagicType magicType || null
+    @applyPriorities()
+
   applyPriorities: () ->
     getAspectPriority = (aspect) => cp.aspect[aspect][@priority[aspect]]
 
@@ -47,7 +54,12 @@ class Creation
       @points.attributes.available = attributes
 
     magic = getAspectPriority 'magic'
-    # TODO: Magic
+    if magic? and @char.magicType?
+      specificMagicAspect = magic[@char.magicType.name]
+      if specificMagicAspect
+        @char.magicType.effects['attributes.mag.value'] = new basetypes.InitialValue specificMagicAspect.mag
+        @char.magicType.applyEffects(@char)
+
 
     skills = getAspectPriority 'skills'
     if skills?
@@ -62,12 +74,14 @@ class Creation
     priority: @priority
     metatype: @metatype
     name: @char.name
+    magicType: @char.magicType?.name || null
 
 
   applyState: (state) ->
     @setMetatype state.metatype if state.metatype
     for aspect, prio of state.priority
       @setPriority aspect, prio if prio
+    @setMagicType state.magicType
     @char.name = state.name
 
 do (exports = exports ? @creation = {}) ->
