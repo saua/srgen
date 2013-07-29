@@ -17,18 +17,17 @@ body(ng-controller='MainController')
             thead
                 tr
                     td
-                    th Special Attributes
-                    th Attributes
-                    th Skills
-                    th Skill Groups
-                    th Karma
+                    th.text-right(ng-repeat='type in types') {{text.creation.priority.points[type]}}
+                    th.text-right {{text.creation.priority.points.resources}}
             tbody
                 tr
                     th Available
-                    td(ng-repeat='type in types') {{creation.points[type].available}}
+                    td.text-right(ng-repeat='type in types') {{creation.points[type].available}}
+                    td.text-right {{creation.points.resources.available | currency:'¥' }}
                 tr
                     th Used
-                    td(ng-repeat='type in types', ng-class="{ info: 'creation.points[type].used < creation.points[type].available' }") {{creation.points[type].used}}
+                    td.text-right(ng-repeat='type in types', ng-class="{ info: 'creation.points[type].used < creation.points[type].available' }") {{creation.points[type].used}}
+                    td.text-right {{creation.points.resources.used | currency:'¥' }}
         tabset
             tab(heading='{{text.ui.tab.characterGeneration}}')
                 h2

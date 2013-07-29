@@ -33,8 +33,8 @@ text.term =
   resSkills: 'Resonance skills'
   activeSkill: 'Active skill'
   activeSkills: 'Active skills'
-  attribute: 'sttribute'
-  attributes: 'sttributes'
+  attribute: 'attribute'
+  attributes: 'attributes'
   spell: 'spell'
   spells: 'spells'
   complexForm: 'complex Form'
@@ -43,6 +43,13 @@ text.term =
 text.creation =
   priority:
     priority: 'Priority'
+    points:
+      specialAttributes: 'Special Attributes'
+      attributes: 'Attributes'
+      skills: 'Skills'
+      skillGroups: 'Skill Groups'
+      karma: 'Karma'
+      resources: 'Resources'
     magicOrResource:
       magician: 'Magician'
       technomancer: 'Technomancer'
