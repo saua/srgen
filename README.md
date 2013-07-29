@@ -16,6 +16,9 @@ Note that these data files are not copyrighted by me and are *not* released
 under the MIT license (which applies to the rest of the source code of this
 project).
 
-## Build Status
+## Links
 
+There's a Travis CI build available:
 [![Build Status](https://secure.travis-ci.org/saua/srgen.png)](http://travis-ci.org/saua/srgen)
+
+Occasionally the current version is deployed at https://srgen.herokuapp.com/.
