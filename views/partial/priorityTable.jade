@@ -1,11 +1,12 @@
-table.table.table-hover.priority-table
+table.table.table-hover.table-condensed.priority-table
     thead
         tr
             th {{tprio.priority}}
             th(ng-repeat='aspect in cprio.aspects') {{tprio.aspect[aspect]}}
     tbody
         tr(ng-repeat='p in cprio.priorities', ng-class='{ warning: priorityUnused(p), danger: priorityOverused(p) }' )
-            td {{p}}
+            td
+                div.radio {{p}}
             td
                 div.radio
                     input(type='radio', name='metatype', id='metatype_{{p}}', value='{{p}}', ng-model='creation.priority.metatype')
