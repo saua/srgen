@@ -40,7 +40,6 @@ describe 'Priority Creation', ->
       mod.increaseAttribute 'int' #4
       mod.increaseAttribute 'int' #5
       mod.increaseAttribute 'int' #6
-      console.log c.char.attributes.int.value.value
       expect(mod.canIncreaseAttribute 'int').toBe false
 
     it 'decreasing an increased attribute lowers it', ->
@@ -51,7 +50,7 @@ describe 'Priority Creation', ->
     it 'increases used attribute points when increasing an attribute', ->
       attributePoints = c.points.attributes.used
       mod.increaseAttribute 'int'
-      expect(c.points.attributes.used).toBe attributePoints-1
+      expect(c.points.attributes.used).toBe attributePoints+1
 
     it 'resets used attribute points when decreasing an attribute', ->
       attributePoints = c.points.attributes.used
