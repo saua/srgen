@@ -7,7 +7,7 @@ table.table.table-striped.table-hover.attribute-table
     tbody
         tr(ng-repeat='name in core.attributes.physicalMental')
             th {{text.attributes[name]}}
-            td.text-center
+            td.text-center.no-select
                 attribute-editor(char='char', modifier='modifier', attribute='{{name}}')
             td.text-center {{char.attributes[name].min.value}}/{{char.attributes[name].max.value}}
         tr(ng-repeat="name in ['mag','res']")
