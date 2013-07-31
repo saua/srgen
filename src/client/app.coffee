@@ -16,10 +16,15 @@ data.service 'text', ->
 
 main = angular.module 'srgen.main', ['srgen.data', 'srgen.priority', 'ui.bootstrap']
 
+main.controller 'ModifierController', [ '$scope', ($scope) ->
+  # nothing much: this "requires" a modifier to be available in the scope
+]
+
 main.directive 'attributeTable', ['core', 'text', (core, text) ->
   restrict: 'E'
   replace: true
   transclude: false
+  controller: 'ModifierController'
   scope:
     char: '='
     modifier: '='
@@ -34,14 +39,15 @@ main.directive 'attributeEditor', ->
   restrict: 'E'
   replace: true
   transclude: false
+  controller: '^ModifierController'
   scope:
     char: '@'
     attribute: '@'
   template: '''
             <div class="input-append input-prepend">
-            <button class="btn" type="button" ng-click="down()" ng-disabled="attribute.value <= attribute.min">-</button>
+            <button class="btn" type="button" ng-click="modifier.decreaseAttribute(attribute)" ng-disabled="modifier.canDecreaseAttribute(attribute)">-</button>
             <input type="text" class="input-mini" ng-model="attribute.value" readonly/>
-            <button class="btn" type="button" ng-click="up()" ng-disabled="attribute.value >= attribute.max">+</button>
+            <button class="btn" type="button" ng-click="modifier.increaseAttribute(attribute)" ng-disabled="modifier.canIncreaseAttribute(attribute)">+</button>
             </div>
             '''
   link: ($scope, $element, $attrs) ->

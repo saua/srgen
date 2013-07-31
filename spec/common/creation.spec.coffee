@@ -12,6 +12,42 @@ describe 'Priority Creation', ->
     expect(c.char.attributes.bod).toBeDefined()
     expect(c.char.attributes.bod.value.value).toBe null
 
+  describe 'CharacterModifier', ->
+    mod = null
+
+    beforeEach ->
+      c.setMetatype 'human'
+      mod = c.modifier
+
+    it 'does not allow default attribute values to be decrease', ->
+      expect(mod.canDecreaseAttribute 'int').toBe false
+
+    it 'allows default attribute values to be increase', ->
+      expect(mod.canIncreaseAttribute 'int').toBe true
+
+    it 'increasing a attribute raises it', ->
+      mod.increaseAttribute 'int'
+      expect(c.char.attributes.int.value.value).toBe 2
+
+    it 'increasing a attribute twice raises it even further', ->
+      mod.increaseAttribute 'int'
+      mod.increaseAttribute 'int'
+      expect(c.char.attributes.int.value.value).toBe 3
+
+    it 'can not raise an attribute past its maximum', ->
+      mod.increaseAttribute 'int' #2
+      mod.increaseAttribute 'int' #3
+      mod.increaseAttribute 'int' #4
+      mod.increaseAttribute 'int' #5
+      mod.increaseAttribute 'int' #6
+      console.log c.char.attributes.int.value.value
+      expect(mod.canIncreaseAttribute 'int').toBe false
+
+    it 'decreasing an increased attribute lowers it', ->
+      mod.increaseAttribute 'int'
+      mod.decreaseAttribute 'int'
+      expect(c.char.attributes.int.value.value).toBe 1
+
   describe 'Metatype', ->
     it 'does not give special attributes to unknown metatypes', ->
       c.setPriority 'metatype', 'B'

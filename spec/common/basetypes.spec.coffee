@@ -44,14 +44,14 @@ describe 'EffectsProvider', ->
       v: new bt.Value
       n:
         nv: new bt.Value
-    eb = new bt.EffectsProvider
+    eb = new bt.EffectsProvider root
 
   it 'can set a simple value', ->
     eb.effects["v"] = new bt.InitialValue 1
-    eb.applyEffects root
+    eb.applyEffects()
     expect(root.v.value).toBe 1
 
   it 'can set a nested value', ->
     eb.effects["n.nv"] = new bt.InitialValue 1
-    eb.applyEffects root
+    eb.applyEffects()
     expect(root.n.nv.value).toBe 1

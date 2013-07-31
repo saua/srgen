@@ -15,8 +15,8 @@ copy = (obj) ->
   return result
 
 class Metatype extends basetypes.EffectsProvider
-  constructor: (@name) ->
-    super
+  constructor: (@name, target) ->
+    super(target)
     @data = copy(core.metatype[@name])
     for attr, limit of @data.attributes
       @effects["attributes.#{attr}.min"] = new basetypes.InitialValue limit.min
@@ -57,13 +57,13 @@ class MagicType extends basetypes.EffectsProvider
   @magicTypes = {}
   @registerMagicType: (subtype) ->
     @magicTypes[subtype.magicType] = subtype
-  @get: (name) ->
+  @get: (name, target) ->
     return null if not name
     namedType = @magicTypes[name]
-    return new namedType
+    return new namedType target
 
-  constructor: ->
-    super
+  constructor: (target) ->
+    super target
     @name = @.constructor.magicType
     @effects['attributes'] = new AddAttributeEffect('mag')
     @effects['attributes.mag.value'] = new basetypes.InitialValue 0
@@ -71,32 +71,32 @@ class MagicType extends basetypes.EffectsProvider
 class Adept extends MagicType
   @magicType = 'adept'
   MagicType.registerMagicType(@)
-  constructor: ->
-    super
+  constructor: (target) ->
+    super target
 
 class Magician extends MagicType
   @magicType = 'magician'
   MagicType.registerMagicType(@)
-  constructor: ->
-    super
+  constructor: (target) ->
+    super target
 
 class AspectedMagician extends MagicType
   @magicType = 'aspectedMagician'
   MagicType.registerMagicType(@)
-  constructor: ->
-    super
+  constructor: (target) ->
+    super target
 
 class ResonanceType extends basetypes.EffectsProvider
   @resonanceTypes = {}
   @registerResonanceType: (subtype) ->
     @resonanceTypes[subtype.resonanceType] = subtype
-  @get: (name) ->
+  @get: (name, target) ->
     return null if not name
     namedType = @resonanceTypes[name]
-    return new namedType
+    return new namedType target
 
-  constructor: ->
-    super
+  constructor: (target) ->
+    super target
     @name = @.constructor.resonanceType
     @effects['attributes'] = new AddAttributeEffect('res')
     @effects['attributes.res.value'] = new basetypes.InitialValue 0
@@ -104,8 +104,8 @@ class ResonanceType extends basetypes.EffectsProvider
 class Technomancer extends ResonanceType
   @resonanceType = 'technomancer'
   ResonanceType.registerResonanceType(@)
-  constructor: ->
-    super
+  constructor: (target) ->
+    super target
 
 class Character
   constructor: ->
@@ -114,27 +114,51 @@ class Character
     @magicType = null
     @resonanceType = null
     @attributes = new Attributes
+    @effectsProviders = []
 
   setMetatype: (metatype) ->
-    newMetaType = new Metatype(metatype)
-    @metatype?.unApplyEffects(@)
+    newMetaType = new Metatype metatype, @
+    @metatype?.unApplyEffects()
     @metatype = newMetaType
-    @metatype.applyEffects(@)
+    @metatype.applyEffects()
 
   setMagicType: (magicType) ->
-    newMagicType =  MagicType.get(magicType)
-    @magicType?.unApplyEffects(@)
+    newMagicType =  MagicType.get magicType, @
+    @magicType?.unApplyEffects()
     @magicType = newMagicType
-    @magicType?.applyEffects(@)
+    @magicType?.applyEffects()
 
   setResonanceType: (resonanceType) ->
-    newResonanceType = ResonanceType.get(resonanceType)
-    @resonanceType?.unApplyEffects(@)
+    newResonanceType = ResonanceType.get resonanceType, @
+    @resonanceType?.unApplyEffects()
     @resonanceType = newResonanceType
-    @resonanceType?.applyEffects(@)
+    @resonanceType?.applyEffects()
+
+  addEffectsProvider: (effectsProvider) ->
+    if effectsProvider.target != @
+      throw new Error "EffectsProvider #{effectsProvider} does not apply to character, but to #{effectsProvider.target}!"
+    effectsProvider.applyEffects()
+    @effectsProviders.push effectsProvider
+
+  removeEffectsProvider: (effectsProvider) ->
+    index = @effectsProviders.indexOf effectsProvider
+    throw new Error "EffectProvider #{effectsProvider} is not in list!" if index == -1
+    effectsProvider.unApplyEffects()
+    @effectsProviders.splice index, 1
+
+class CharacterModifier
+  notImplemented = ->
+    throw new Error "this method is not implemented"
+
+  increaseAttribute: notImplemented
+  canIncreaseAttribute: notImplemented
+  decreaseAttribute: notImplemented
+  canDecreaseAttribute: notImplemented
+
 
 do (exports = exports ? @character = {}) ->
   exports.Metatype = Metatype
   exports.Attribute = Attribute
   exports.Attributes = Attributes
   exports.Character = Character
+  exports.CharacterModifier = CharacterModifier

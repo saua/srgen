@@ -7,9 +7,55 @@ basetypes = @basetypes ? require './basetypes'
 
 cp = core.creation.priority
 
+class CreationModifier extends character.CharacterModifier
+  constructor: (@creation) ->
+
+  getAttribute: (attrName) ->
+    @creation.char.attributes[attrName]
+
+  modAttribute: (attrName, modValue) ->
+    attrPath = "attributes.#{attrName}.value"
+    effect = @creation.effects.get attrPath
+    if effect
+      effect.mod += modValue
+      @creation.effects.reApplyEffects()
+    else
+      @creation.effects.add attrPath, new basetypes.ModValue modValue
+
+  decreaseAttribute: (attrName) ->
+    throw "Can't decrease #{attrName}!" if not @canDecreaseAttribute attrName
+    @modAttribute attrName, -1
+
+  increaseAttribute: (attrName) ->
+    throw "Can't increase #{attrName}!" if not @canIncreaseAttribute attrName
+    @modAttribute attrName, +1
+
+  canDecreaseAttribute: (attrName) ->
+    attr = @getAttribute attrName
+    return attr.value.value > attr.min.value
+
+  canIncreaseAttribute: (attrName) ->
+    attr = @getAttribute attrName
+    return attr.value.value < attr.max.value
+
+
+class CreationEffects extends basetypes.EffectsProvider
+  constructor: (@creation) ->
+    super @creation.char
+
+  add: (path, effect) ->
+    @unApplyEffects()
+    @effects[path] = effect
+    @applyEffects()
+
+  get: (path) ->
+    @effects[path]
+
 class Creation
   constructor: ->
     @char = new character.Character
+    @effects = new CreationEffects @
+    @char.addEffectsProvider @effects
     @priority =
       metatype: null
       attributes: null
@@ -25,6 +71,7 @@ class Creation
       resources: defaultPoints()
       karma: available: 25, used: 0
     @metatype = null
+    @modifier = new CreationModifier @
 
   setMetatype: (name) ->
     @metatype = name
@@ -69,9 +116,6 @@ class Creation
         if specificResonanceAspect
           @char.resonanceType.effects['attributes.res.value'] = new basetypes.InitialValue specificResonanceAspect.res
           @char.resonanceType.applyEffects @char
-
-
-
 
     skills = getAspectPriority 'skills'
     if skills?
