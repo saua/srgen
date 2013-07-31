@@ -65,8 +65,8 @@ class MagicType extends basetypes.EffectsProvider
   constructor: ->
     super
     @name = @.constructor.magicType
-    @effects["attributes"] = new AddAttributeEffect('mag')
-    @effects["attributes.mag.value"] = new basetypes.InitialValue 0
+    @effects['attributes'] = new AddAttributeEffect('mag')
+    @effects['attributes.mag.value'] = new basetypes.InitialValue 0
 
 class Adept extends MagicType
   @magicType = 'adept'
@@ -83,6 +83,27 @@ class Magician extends MagicType
 class AspectedMagician extends MagicType
   @magicType = 'aspectedMagician'
   MagicType.registerMagicType(@)
+  constructor: ->
+    super
+
+class ResonanceType extends basetypes.EffectsProvider
+  @resonanceTypes = {}
+  @registerResonanceType: (subtype) ->
+    @resonanceTypes[subtype.resonanceType] = subtype
+  @get: (name) ->
+    return null if not name
+    namedType = @resonanceTypes[name]
+    return new namedType
+
+  constructor: ->
+    super
+    @name = @.constructor.resonanceType
+    @effects['attributes'] = new AddAttributeEffect('res')
+    @effects['attributes.res.value'] = new basetypes.InitialValue 0
+
+class Technomancer extends ResonanceType
+  @resonanceType = 'technomancer'
+  ResonanceType.registerResonanceType(@)
   constructor: ->
     super
 
@@ -105,6 +126,12 @@ class Character
     @magicType?.unApplyEffects(@)
     @magicType = newMagicType
     @magicType?.applyEffects(@)
+
+  setResonanceType: (resonanceType) ->
+    newResonanceType = ResonanceType.get(resonanceType)
+    @resonanceType?.unApplyEffects(@)
+    @resonanceType = newResonanceType
+    @resonanceType?.applyEffects(@)
 
 do (exports = exports ? @character = {}) ->
   exports.Metatype = Metatype

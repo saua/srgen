@@ -52,10 +52,13 @@ describe 'Priority Creation', ->
       expect(c.char.attributes.mag.value.value).toBe 5
 
   describe 'Resonance', ->
-# TODO implement resonance
-#    it 'gives 4 resonance when selecting technomancer on priority B', ->
-#      c.setResonanceType 'technomancer'
-#      expect(c.char.attributes.res.value.value).toBe 4
+    beforeEach ->
+      c = new cr.Creation
+      c.setPriority 'magic', 'B'
+
+    it 'gives 4 resonance when selecting technomancer on priority B', ->
+      c.setResonanceType 'technomancer'
+      expect(c.char.attributes.res.value.value).toBe 4
 
   describe 'Skills', ->
     it 'does not give skill points without priority', ->
@@ -105,3 +108,8 @@ describe 'Priority Creation', ->
       c.setMagicType 'adept'
       reloadState()
       expect(c.char.magicType.name).toBe 'adept'
+
+    it 'remembers the resonanceType', ->
+      c.setResonanceType 'technomancer'
+      reloadState()
+      expect(c.char.resonanceType.name).toBe 'technomancer'

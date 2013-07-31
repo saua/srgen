@@ -39,3 +39,10 @@ describe 'Character', ->
       char.setMagicType 'aspectedMagician'
       expectAttribute 'mag', 0
 
+  describe 'Resonance', ->
+    it 'does not allow wrong resonance type to be set', ->
+      expect(-> char.setResonanceType 'frobnicator').toThrow()
+
+    it 'gives resonance to a technomancer', ->
+      char.setResonanceType 'technomancer'
+      expectAttribute 'res', 0

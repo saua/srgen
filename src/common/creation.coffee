@@ -42,6 +42,10 @@ class Creation
     @char.setMagicType magicType || null
     @applyPriorities()
 
+  setResonanceType: (resonanceType) ->
+    @char.setResonanceType resonanceType || null
+    @applyPriorities()
+
   applyPriorities: () ->
     getAspectPriority = (aspect) => cp.aspect[aspect][@priority[aspect]]
 
@@ -54,11 +58,19 @@ class Creation
       @points.attributes.available = attributes
 
     magic = getAspectPriority 'magic'
-    if magic? and @char.magicType?
-      specificMagicAspect = magic[@char.magicType.name]
-      if specificMagicAspect
-        @char.magicType.effects['attributes.mag.value'] = new basetypes.InitialValue specificMagicAspect.mag
-        @char.magicType.applyEffects(@char)
+    if magic?
+      if @char.magicType?
+        specificMagicAspect = magic[@char.magicType.name]
+        if specificMagicAspect
+          @char.magicType.effects['attributes.mag.value'] = new basetypes.InitialValue specificMagicAspect.mag
+          @char.magicType.applyEffects @char
+      if @char.resonanceType?
+        specificResonanceAspect = magic[@char.resonanceType.name]
+        if specificResonanceAspect
+          @char.resonanceType.effects['attributes.res.value'] = new basetypes.InitialValue specificResonanceAspect.res
+          @char.resonanceType.applyEffects @char
+
+
 
 
     skills = getAspectPriority 'skills'
@@ -75,6 +87,7 @@ class Creation
     metatype: @metatype
     name: @char.name
     magicType: @char.magicType?.name || null
+    resonanceType: @char.resonanceType?.name || null
 
 
   applyState: (state) ->
@@ -82,6 +95,7 @@ class Creation
     for aspect, prio of state.priority
       @setPriority aspect, prio if prio
     @setMagicType state.magicType
+    @setResonanceType state.resonanceType
     @char.name = state.name
 
 do (exports = exports ? @creation = {}) ->
