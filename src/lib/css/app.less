@@ -1,3 +1,13 @@
+.user-select(@params) {
+  -ms-user-select: @params;
+  -moz-user-select: @params;
+  -webkit-user-select: @params;
+}
+
 td > div > label > dl {
   margin-top: 0
+}
+
+.no-select {
+  .user-select(none)
 }

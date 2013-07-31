@@ -1,23 +1,24 @@
 table.table.table-striped.table-hover.attribute-table
     thead
         tr
-            td
-            th Value
-            th Limits
+            td.col-lg-4
+            th.col-lg-4.text-center Value
+            th.col-lg-4.text-center Limits
     tbody
         tr(ng-repeat='name in core.attributes.physicalMental')
             th {{text.attributes[name]}}
-            td {{char.attributes[name].value.value}}
-            td {{char.attributes[name].min.value}}/{{char.attributes[name].max.value}}
+            td.text-center
+                attribute-editor(char='char', modifier='modifier', attribute='{{name}}')
+            td.text-center {{char.attributes[name].min.value}}/{{char.attributes[name].max.value}}
         tr(ng-repeat="name in ['mag','res']")
             th {{text.attributes[name]}}
-            td {{char.attributes[name].value.value}}
-            td {{char.attributes[name].max.value}}
+            td.text-center {{char.attributes[name].value.value}}
+            td.text-center {{char.attributes[name].max.value}}
         tr
             th {{text.attributes['ess']}}
-            td
-            td {{char.attributes['ess'].max.value}}
+            td.text-center
+            td.text-center {{char.attributes['ess'].max.value}}
         tr
             th {{text.attributes['edg']}}
-            td {{char.attributes['edg'].value.value}}
-            td {{char.attributes['edg'].min.value}}/{{char.attributes['edg'].max.value}}
+            td.text-center {{char.attributes['edg'].value.value}}
+            td.text-center {{char.attributes['edg'].min.value}}/{{char.attributes['edg'].max.value}}

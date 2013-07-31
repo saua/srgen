@@ -1,0 +1,6 @@
+.input-group(ng-class="{'has-error': !modifier.attributeValueValid(attribute) }")
+    .input-group-btn
+        button.btn.btn-default.no-select(ng-click='modifier.decreaseAttribute(attribute)', ng-disabled='!modifier.canDecreaseAttribute(attribute)') -
+    input.form-control(type='text', ng-model='char.attributes[attribute].value.value', readonly)
+    .input-group-btn
+        button.btn.btn-default.no-select(ng-click='modifier.increaseAttribute(attribute)', ng-disabled='!modifier.canIncreaseAttribute(attribute)') +

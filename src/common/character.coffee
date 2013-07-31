@@ -135,8 +135,8 @@ class Character
     @resonanceType?.applyEffects()
 
   addEffectsProvider: (effectsProvider) ->
-    if effectsProvider.target != @
-      throw new Error "EffectsProvider #{effectsProvider} does not apply to character, but to #{effectsProvider.target}!"
+    if effectsProvider.target() != @
+      throw new Error "EffectsProvider #{effectsProvider} does not apply to character, but to #{effectsProvider.target()}!"
     effectsProvider.applyEffects()
     @effectsProviders.push effectsProvider
 
@@ -154,6 +154,8 @@ class CharacterModifier
   canIncreaseAttribute: notImplemented
   decreaseAttribute: notImplemented
   canDecreaseAttribute: notImplemented
+
+  attributeValueValid: notImplemented
 
 
 do (exports = exports ? @character = {}) ->

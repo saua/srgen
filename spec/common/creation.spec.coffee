@@ -48,6 +48,18 @@ describe 'Priority Creation', ->
       mod.decreaseAttribute 'int'
       expect(c.char.attributes.int.value.value).toBe 1
 
+    it 'increases used attribute points when increasing an attribute', ->
+      attributePoints = c.points.attributes.used
+      mod.increaseAttribute 'int'
+      expect(c.points.attributes.used).toBe attributePoints-1
+
+    it 'resets used attribute points when decreasing an attribute', ->
+      attributePoints = c.points.attributes.used
+      mod.increaseAttribute 'int'
+      mod.decreaseAttribute 'int'
+      expect(c.points.attributes.used).toBe attributePoints
+
+
   describe 'Metatype', ->
     it 'does not give special attributes to unknown metatypes', ->
       c.setPriority 'metatype', 'B'

@@ -8,19 +8,22 @@ basetypes = @basetypes ? require './basetypes'
 cp = core.creation.priority
 
 class CreationModifier extends character.CharacterModifier
-  constructor: (@creation) ->
+  constructor: (creation) ->
+    @creation = -> creation
 
   getAttribute: (attrName) ->
-    @creation.char.attributes[attrName]
+    @creation().char.attributes[attrName]
 
   modAttribute: (attrName, modValue) ->
     attrPath = "attributes.#{attrName}.value"
-    effect = @creation.effects.get attrPath
+    creation = @creation()
+    effect = creation.effects.get attrPath
     if effect
       effect.mod += modValue
-      @creation.effects.reApplyEffects()
+      creation.effects.reApplyEffects()
     else
-      @creation.effects.add attrPath, new basetypes.ModValue modValue
+      creation.effects.add attrPath, new basetypes.ModValue modValue
+    creation.points.attributes.used += modValue
 
   decreaseAttribute: (attrName) ->
     throw "Can't decrease #{attrName}!" if not @canDecreaseAttribute attrName
@@ -38,10 +41,15 @@ class CreationModifier extends character.CharacterModifier
     attr = @getAttribute attrName
     return attr.value.value < attr.max.value
 
+  attributeValueValid: (attrName) ->
+    return true if not attrName?
+    attr = @getAttribute attrName
+    return attr.min.value <= attr.value.value <= attr.max.value
+
 
 class CreationEffects extends basetypes.EffectsProvider
-  constructor: (@creation) ->
-    super @creation.char
+  constructor: (creation) ->
+    super creation.char
 
   add: (path, effect) ->
     @unApplyEffects()

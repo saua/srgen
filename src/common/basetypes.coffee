@@ -66,18 +66,19 @@ class Value extends EffectTarget
     "(#{@value})"
 
 class EffectsProvider
-  constructor: (@target) ->
+  constructor: (target) ->
     @effects = {}
+    @target = -> target
 
   applyEffects: ->
     for key, effect of @effects
-      value = getPath @target, key
+      value = getPath @target(), key
       value.addEffect effect
     return # avoid building an array
 
   unApplyEffects: ->
     for key, effect of @effects
-      value = getPath @target, key
+      value = getPath @target(), key
       value.removeEffect effect
     return # avoid building an array
 
