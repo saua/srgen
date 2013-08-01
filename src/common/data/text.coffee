@@ -67,6 +67,8 @@ text.ui =
   name: 'Name'
   namePlaceholder: 'Enter a character name'
   metatype: 'Metatype'
+  limits: 'Limits'
+  value: 'Value'
   tab:
     characterGeneration: 'Character Generation'
     attributes: 'Attributes'

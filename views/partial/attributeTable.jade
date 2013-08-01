@@ -1,24 +1,36 @@
-table.table.table-striped.table-hover.attribute-table
-    thead
-        tr
-            td.col-lg-4
-            th.col-lg-4.text-center Value
-            th.col-lg-4.text-center Limits
-    tbody
-        tr(ng-repeat='name in core.attributes.physicalMental')
-            th {{text.attributes[name]}}
-            td.text-center.no-select
-                attribute-editor(char='char', modifier='modifier', attribute='{{name}}')
-            td.text-center {{char.attributes[name].min.value}}/{{char.attributes[name].max.value}}
-        tr(ng-repeat="name in ['mag','res']")
-            th {{text.attributes[name]}}
-            td.text-center {{char.attributes[name].value.value}}
-            td.text-center {{char.attributes[name].max.value}}
-        tr
-            th {{text.attributes['ess']}}
-            td.text-center
-            td.text-center {{char.attributes['ess'].max.value}}
-        tr
-            th {{text.attributes['edg']}}
-            td.text-center {{char.attributes['edg'].value.value}}
-            td.text-center {{char.attributes['edg'].min.value}}/{{char.attributes['edg'].max.value}}
+.row
+    .col-lg-4.col-sm-6(ng-repeat='attrs in [core.attributes.physical, core.attributes.mental]')
+        table.table.table-hover.attribute-table
+            thead
+                tr
+                    th.attr
+                    th.value {{text.ui.value}}
+                    th.limits {{text.ui.limits}}
+            tbody
+                tr(ng-repeat='name in attrs')
+                    th(for='attribute-value-{{name}}')
+                        label(for='attribute-value-{{name}}') {{text.attributes[name]}}
+                    td
+                        attribute-editor(id='attribute-value-{{name}}', char='char', modifier='modifier', attribute='{{name}}')
+                    td.limits {{char.attributes[name].min.value}}/{{char.attributes[name].max.value}}
+    .col-lg-4.col-sm-6
+        table.table.table-hover.attribute-table
+            thead
+                tr
+                    th.attr
+                    th.value {{text.ui.value}}
+                    th.limits {{text.ui.limits}}
+            tbody
+                tr(ng-repeat="name in ['mag','res']")
+                    th
+                        label {{text.attributes[name]}}
+                    td.text-center {{char.attributes[name].value.value || '-'}}
+                    td.limits {{char.attributes[name].max.value}}
+                tr
+                    th {{text.attributes['ess']}}
+                    td.text-center
+                    td.limits {{char.attributes['ess'].max.value}}
+                tr
+                    th {{text.attributes['edg']}}
+                    td.text-center {{char.attributes['edg'].value.value}}
+                    td.limits {{char.attributes['edg'].min.value}}/{{char.attributes['edg'].max.value}}

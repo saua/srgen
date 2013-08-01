@@ -11,3 +11,33 @@ td > div > label > dl {
 .no-select {
   .user-select(none)
 }
+
+table.attribute-table {
+  table-layout: fixed;
+  > thead {
+    > tr > th {
+      text-align: center;
+    }
+  }
+  th, td {
+    &.attribute {
+      width: 30%;
+    }
+    &.value {
+      width: 50%;
+    }
+    &.limits {
+      width: 20%;
+    }
+  }
+  > tbody {
+    > tr {
+      > th, > td.limits {
+        vertical-align: middle;
+      }
+      > td.limits {
+        text-align: center;
+      }
+    }
+  }
+}
