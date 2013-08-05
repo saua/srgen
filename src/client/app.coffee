@@ -7,46 +7,34 @@
 core = @core
 text = @text
 
-data = angular.module 'srgen.data', []
-data.service 'core', ->
+base = angular.module 'srgen.base', []
+base.service 'core', ->
   core
-
-data.service 'text', ->
+base.service 'text', ->
   text
 
-main = angular.module 'srgen.main', ['srgen.data', 'srgen.priority', 'ui.bootstrap']
+main = angular.module 'srgen.main', ['srgen.base', 'srgen.priority', 'ui.bootstrap']
 
-main.directive 'attributeTable', ['core', 'text', (core, text) ->
-  restrict: 'E'
-  replace: true
-  transclude: false
-  scope:
-    char: '='
-    modifier: '='
-  templateUrl: 'partial/attributeTable'
-  link: ($scope, $element, $attrs) ->
-    $scope.core = core
-    $scope.text = text
-]
-
-
-main.directive 'attributeEditor', ->
-  restrict: 'E'
-  replace: true
-  transclude: false
-  scope:
-    char: '='
-    modifier: '='
-    attribute: '@'
-  templateUrl: 'partial/attributeEditor',
-  link: ($scope, $element, $attrs) ->
-    # move id to input element, so that label for="" works correcly
-    $element.find('input').attr('id', $attrs.id)
-    $element.removeAttr 'id'
-
-main.controller 'MainController', [ '$rootScope', 'core', 'text', ($rootScope, core, text) ->
+main.controller 'MainController', [ '$rootScope', '$location', 'core', 'text', ($rootScope, $location, core, text) ->
+  $rootScope.getNavClass = (path) ->
+    if $location.path().lastIndexOf(path, 0) == 0
+      'active'
+    else
+      ''
   $rootScope.core = core
   $rootScope.text = text
+]
+
+main.config ['$routeProvider', '$locationProvider', ($routeProvider, $locationProvider) ->
+  $locationProvider.html5Mode true
+  $routeProvider.when '/', {
+    templateUrl: 'partials/viewWelcome.jade'
+  }
+  $routeProvider.when '/character', {
+    templateUrl: 'partials/viewCharacter.jade'
+    controller: 'PriorityCreationController'
+  }
+  $routeProvider.otherwise redirectTo: '/'
 ]
 
 angular.bootstrap document, ['srgen.main']

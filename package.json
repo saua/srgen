@@ -9,7 +9,10 @@
             "url": "https://raw.github.com/saua/srgen/master/LICENSE"
         }
     ],
-    "repository": "git://github.com/saua/srgen.git",
+    "repository": {
+         "type":"git",
+         "url": "https://github.com/saua/srgen.git"
+    },
     "dependencies": {
         "coffee-script": "~1.6.0",
         "express": "~3.3.0",

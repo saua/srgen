@@ -1,0 +1,39 @@
+h1 {{char.name || text.ui.unnamedCharacter }}
+h2 Available Points
+table.table.table-condensed(ng-init="types =['specialAttributes', 'attributes', 'skills', 'skillGroups', 'karma']")
+    thead
+        tr
+            td
+            th.text-right(ng-repeat='type in types') {{text.creation.priority.points[type]}}
+            th.text-right {{text.creation.priority.points.resources}}
+    tbody
+        tr
+            th Available
+            td.text-right(ng-repeat='type in types') {{creation.points[type].available}}
+            td.text-right {{creation.points.resources.available | currency:'¥' }}
+        tr
+            th Used
+            td.text-right(ng-repeat='type in types', ng-class="{ info: 'creation.points[type].used < creation.points[type].available' }") {{creation.points[type].used}}
+            td.text-right {{creation.points.resources.used | currency:'¥' }}
+tabset
+    tab(heading='{{text.ui.tab.characterGeneration}}')
+        h2
+        form
+            div.row
+                .form-group.col-lg-3
+                    label(for='char-name') {{text.ui.name}}
+                    input.form-control(id='char-name', ng-model='char.name', type='text', placeholder='{{text.ui.namePlaceholder}}')
+                .form-group.col-lg-3
+                    label(for='char-metatype') {{text.ui.metatype}}
+                    select.form-control(id='char-metatype', ng-model='char.metatype.name', ng-options='name as text.metatype[name] for name in core.metatypes', ng-change='creation.setMetatype(char.metatype.name)')
+        h2 Priorities
+        priority-table(creation='creation')
+    tab(heading='{{text.ui.tab.attributes}}')
+        attribute-table(modifier='creation.modifier', char='char')
+    tab(heading='{{text.ui.tab.magicOrResonance}}', disabled="'true'")
+    tab(heading='Debug')
+        table.table
+            tbody
+                tr
+                    th creation
+                    td {{creation}}

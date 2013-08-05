@@ -1,13 +1,14 @@
 #= require ../common/creation
+#= require ./attributes
 
 creation = @creation
 localStorage = @localStorage
 
-module = angular.module 'srgen.priority', ['srgen.data']
+module = angular.module 'srgen.priority', ['srgen.base', 'srgen.attributes']
 
 module.directive 'priorityTable', [ 'core', 'text', (core, text) ->
   restrict: 'E',
-  templateUrl: '/partial/priorityTable'
+  templateUrl: '/partials/priorityTable'
   scope: {
     creation: '='
   }
