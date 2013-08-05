@@ -1,5 +1,4 @@
 express = require 'express'
-passport = require 'passport'
 path = require 'path'
 
 config = require './src/server/config'

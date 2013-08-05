@@ -24,6 +24,7 @@
         "jasmine-node": "~1.11.0"
     },
     "scripts": {
+        "start": "node node_modules/coffee-script/bin/coffee server.coffee",
         "test": "node node_modules/jasmine-node/bin/jasmine-node --coffee spec/"
     },
     "engines": {
