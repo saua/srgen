@@ -11,22 +11,22 @@ describe 'Effect', ->
     v = new bt.Value
 
   it 'throws when using a plain Effect', ->
-    expect(-> v.addEffect(new bt.Effect)).toThrow()
+    expect(-> v.addEffect new bt.Effect).toThrow()
 
   it 'sets the value when using InitialValue', ->
-    v.addEffect(new bt.InitialValue(1))
+    v.addEffect new bt.InitialValue 1
     expect(v.value).toBe(1)
 
   it 'throws when setting two initial values', ->
-    v.addEffect(new bt.InitialValue(1))
-    expect(-> v.addEffect(new bt.InitialValue(2))).toThrow()
+    v.addEffect new bt.InitialValue 1
+    expect(-> v.addEffect(new bt.InitialValue 2)).toThrow()
 
   it 'throws if trying to use a mod effect without an initial', ->
-    expect(-> v.addEffect(new bt.ModValue(1))).toThrow()
+    expect(-> v.addEffect(new bt.ModValue 1)).toThrow()
 
   it 'applies the mod effect after an initial', ->
-    v.addEffect(new bt.InitialValue(1))
-    v.addEffect(new bt.ModValue(+1))
+    v.addEffect new bt.InitialValue 1
+    v.addEffect new bt.ModValue +1
     expect(v.value).toBe(2)
 
   it 'applies mod effects cummulatively', ->
