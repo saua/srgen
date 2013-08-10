@@ -110,6 +110,22 @@ describe 'Priority Creation', ->
       c.setMagicType 'aspectedMagician'
       expect(c.char.attributes.mag.value.value).toBe 5
 
+    it 'does not allow magic to be lowered below the initial value', ->
+      c.setMagicType 'aspectedMagician'
+      expect(c.canDecreaseAttribute 'mag').toBe false
+      expect(-> c.decreaseAttribute 'mag').toThrow()
+
+    it 'remembers the attribute increase when switching magic type', ->
+      c.setMagicType 'magician'
+      c.increaseAttribute 'mag'
+      c.setMagicType 'aspectedMagician'
+      expect(c.char.attributes.mag.value.value).toBe 6
+
+    it 'can take away magic', ->
+      c.setMagicType 'magician'
+      c.setMagicType null
+      expect(c.char.attributes.mag).toBeUndefined()
+
   describe 'Resonance', ->
     beforeEach ->
       c = new cr.Creation

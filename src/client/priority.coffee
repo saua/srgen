@@ -1,6 +1,8 @@
+#= require ../common/character
 #= require ../common/creation
 #= require ./attributes
 
+character = @character
 creation = @creation
 localStorage = @localStorage
 
@@ -92,9 +94,18 @@ module.directive 'prioTableMagic', ['$parse', 'text', ($parse, text) ->
   link: (scope, elem, attr) ->
     obj = $parse(attr.obj)(scope)
     result = ''
-    for type in ['magician', 'technomancer', 'adept', 'aspectedMagician']
+
+    magicTypes = core.creation.priority.magicOrResonanceTypes
+
+    # ugly special casing
+    if obj['magician']? && angular.equals(obj['magician'], obj['mysticAdept'])
+      result += "<dt>#{text.term.magicOrResonanceType.magician} #{text.term.or} #{text.term.magicOrResonanceType.mysticAdept}</dt>"
+      result += "<dd>#{benefits(obj.magician)}</dd>"
+      magicTypes = magicTypes.slice 2
+
+    for type in magicTypes
       if type of obj
-        result += "<dt>#{text.creation.priority.magicOrResource[type]}</dt>"
+        result += "<dt>#{text.term.magicOrResonanceType[type]}</dt>"
         result += "<dd>#{benefits(obj[type])}</dd>"
     if result
       elem.append "<dl>#{result}</dl>"
@@ -119,6 +130,24 @@ module.controller 'PriorityCreationController', ['$scope', 'core', ($scope, core
     $scope.creation.setMetatype 'human'
   $scope.char = $scope.creation.char
   $scope.prio = angular.copy $scope.creation.priority
+  $scope.magicOrResonanceTabName = ->
+    if $scope.char.attributes.mag?
+      text.ui.tab.magic
+    else if $scope.char.attributes.res?
+      text.ui.tab.resonance
+    else
+      text.ui.tab.magicOrResonance
+
+  $scope.magicOrResonanceType = $scope.char.magicType?.name || $scope.char.resonanceType?.name
+  $scope.updateMagicOrResonanceType = (mor) ->
+    # for some strang reason $scope.magicOrResonanceType is *READ* from this scope, but written to the tab scope
+    $scope.magicOrResonanceType = mor
+    isMagic = mor of character.MagicType.magicTypes
+    isResonance = mor of character.ResonanceType.resonanceTypes
+
+    $scope.creation.setMagicType if isMagic then mor else null
+    $scope.creation.setResonanceType if isResonance then mor else null
+
   $scope.$watch 'creation.priority', ->
     $scope.creation.applyPriorities()
   , true

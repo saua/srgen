@@ -28,6 +28,8 @@ main.controller 'MainController', [ '$rootScope', '$location', 'core', 'text', (
 main.controller 'DebugController', [ '$scope', ($scope) ->
   $scope.dump = (obj) ->
     console.dir obj
+  $scope.dumpScope = ->
+    console.dir $scope.$parent
 ]
 
 main.config ['$routeProvider', '$locationProvider', ($routeProvider, $locationProvider) ->

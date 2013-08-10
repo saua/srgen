@@ -75,13 +75,15 @@ class Creation extends character.CharacterModifier
       if @char.magicType?
         specificMagicAspect = magic[@char.magicType.name]
         if specificMagicAspect
+          @char.magicType.unApplyEffects()
           @char.magicType.effects['attributes.mag.value'] = new basetypes.InitialValue specificMagicAspect.mag
-          @char.magicType.applyEffects @char
+          @char.magicType.applyEffects()
       if @char.resonanceType?
         specificResonanceAspect = magic[@char.resonanceType.name]
         if specificResonanceAspect
+          @char.resonanceType.unApplyEffects()
           @char.resonanceType.effects['attributes.res.value'] = new basetypes.InitialValue specificResonanceAspect.res
-          @char.resonanceType.applyEffects @char
+          @char.resonanceType.applyEffects()
 
     skills = getAspectPriority 'skills'
     if skills?
@@ -92,9 +94,20 @@ class Creation extends character.CharacterModifier
     if resources?
       @points.resources.available = resources
 
+    # re-apply point mods
+    @points.attributes.used = 0
+    @points.specialAttributes.used = 0
+    for name, value of @attributes
+      @modAttribute name, value, true
+
+
   setMagicType: (magicType) ->
+    if @char.magicType?.magicType == magicType
+      return
     @char.setMagicType magicType || null
     @applyPriorities()
+
+  setMagicOrResonanceType: (magicOrResonanceType) ->
 
   setResonanceType: (resonanceType) ->
     @char.setResonanceType resonanceType || null
@@ -104,11 +117,17 @@ class Creation extends character.CharacterModifier
     attrPath = "attributes.#{attrName}.value"
     effect = @effects.get attrPath
     if effect
-      effect.mod += howMuch
+      if reset
+        effect.mod = howMuch
+      else
+        effect.mod += howMuch
       @effects.reApplyEffects()
     else
       @effects.add attrPath, new basetypes.ModValue howMuch
-    @attributes[attrName] = (@attributes[attrName] || 0) + howMuch
+
+    if not reset
+      @attributes[attrName] = (@attributes[attrName] || 0) + howMuch
+
     if attrName in core.attributes.special
       @points.specialAttributes.used += howMuch
     else
@@ -124,7 +143,13 @@ class Creation extends character.CharacterModifier
 
   canDecreaseAttribute: (attrName, howMuch = 1) ->
     attr = @char.attributes[attrName]
-    return attr? && attr.value.value-howMuch >= attr.min.value
+    if not (attr? && attr.value.value-howMuch >= attr.min.value)
+      return false
+    attrPath = "attributes.#{attrName}.value"
+    effect = @effects.get attrPath
+    return effect? && effect.mod >= howMuch
+
+
 
   canIncreaseAttribute: (attrName, howMuch = 1) ->
     attr = @char.attributes[attrName]
@@ -152,7 +177,7 @@ class Creation extends character.CharacterModifier
     that.setResonanceType state.resonanceType
     that.char.name = state.name
     for name, value of state.attributes
-      that.increaseAttribute name, value
+      that.modAttribute name, value
 
 
 do (exports = exports ? @creation = {}) ->

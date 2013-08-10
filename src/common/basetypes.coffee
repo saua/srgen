@@ -9,7 +9,9 @@ getPath = (obj, path) ->
   result = obj
   for s in segments
     result = result[s]
-  result
+    if not result?
+      return
+  return result
 
 class Effect
   constructor: (priority = 1000) ->
@@ -18,6 +20,8 @@ class Effect
     throw new Error 'apply method must be implemented!'
   unApply: (target) ->
     return # most effects don't need to do anything here
+  toString: ->
+    @.constructor.name
 
 class EffectTarget
   constructor: () ->
@@ -25,14 +29,16 @@ class EffectTarget
     @errors = []
 
   addEffect: (effect) ->
+    i = @effects.indexOf effect
+    if i != -1
+      throw new Error "Re-adding #{effect} to #{@}!"
     @effects.push effect
     @recalc()
 
   removeEffect: (effect) ->
-    i = @effects.indexOf(effect)
-    if (i == -1)
-      throw new Error '#{effect} was not applied to #{@}!'
-    @effects.splice(i, 1)
+    i = @effects.indexOf effect
+    return if i == -1
+    @effects.splice i, 1
     @recalc()
 
   recalc: ->
@@ -89,6 +95,9 @@ class EffectsProvider
   unApplyEffects: ->
     for key, effect of @effects
       value = getPath @target(), key
+      if not value?
+        continue
+      effect.unApply value
       value.removeEffect effect
     return # avoid building an array
 

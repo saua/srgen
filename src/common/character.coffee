@@ -41,7 +41,7 @@ class Attributes extends basetypes.EffectTarget
   addAttribute: (attr) ->
     @[attr] = new Attribute
 
-  @removeAttribute: (attr) ->
+  removeAttribute: (attr) ->
     delete @[attr]
 
 class AddAttributeEffect extends basetypes.Effect
@@ -60,12 +60,17 @@ class MagicType extends basetypes.EffectsProvider
   @get: (name, target) ->
     return null if not name
     namedType = @magicTypes[name]
+    if not namedType
+      throw new Error "No MagicType named #{name} found!"
     return new namedType target
 
   constructor: (target) ->
     super target
     @name = @.constructor.magicType
     @effects['attributes'] = new AddAttributeEffect('mag')
+    @effects['attributes.mag.min'] = new basetypes.InitialValue 0
+    @effects['attributes.mag.max'] = new basetypes.InitialValue 6
+    # TODO: make this reflect essence
     @effects['attributes.mag.value'] = new basetypes.InitialValue 0
 
 class Adept extends MagicType
@@ -86,6 +91,12 @@ class AspectedMagician extends MagicType
   constructor: (target) ->
     super target
 
+class MysticAdept extends MagicType
+  @magicType = 'mysticAdept'
+  MagicType.registerMagicType(@)
+  constructor: (target) ->
+    super target
+
 class ResonanceType extends basetypes.EffectsProvider
   @resonanceTypes = {}
   @registerResonanceType: (subtype) ->
@@ -99,6 +110,9 @@ class ResonanceType extends basetypes.EffectsProvider
     super target
     @name = @.constructor.resonanceType
     @effects['attributes'] = new AddAttributeEffect('res')
+    @effects['attributes.res.min'] = new basetypes.InitialValue 0
+    @effects['attributes.res.max'] = new basetypes.InitialValue 6
+    # TODO: make this reflect essence
     @effects['attributes.res.value'] = new basetypes.InitialValue 0
 
 class Technomancer extends ResonanceType
@@ -123,7 +137,7 @@ class Character
     @metatype.applyEffects()
 
   setMagicType: (magicType) ->
-    newMagicType =  MagicType.get magicType, @
+    newMagicType = MagicType.get magicType, @
     @magicType?.unApplyEffects()
     @magicType = newMagicType
     @magicType?.applyEffects()
@@ -164,3 +178,5 @@ do (exports = exports ? @character = {}) ->
   exports.Attributes = Attributes
   exports.Character = Character
   exports.CharacterModifier = CharacterModifier
+  exports.MagicType = MagicType
+  exports.ResonanceType = ResonanceType

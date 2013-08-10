@@ -1,5 +1,4 @@
-h1 {{char.name || text.ui.unnamedCharacter }}
-h2 Available Points
+h2 {{char.name || text.ui.unnamedCharacter }}
 table.table.table-condensed(ng-init="types =['specialAttributes', 'attributes', 'skills', 'skillGroups', 'karma']")
     thead
         tr
@@ -17,21 +16,29 @@ table.table.table-condensed(ng-init="types =['specialAttributes', 'attributes', 
             td.text-right {{creation.points.resources.used | currency:'¥' }}
 tabset
     tab(heading='{{text.ui.tab.characterGeneration}}')
-        h2
-        form
-            div.row
-                .form-group.col-lg-3
-                    label(for='char-name') {{text.ui.name}}
-                    input.form-control(id='char-name', ng-model='char.name', type='text', placeholder='{{text.ui.namePlaceholder}}')
-                .form-group.col-lg-3
-                    label(for='char-metatype') {{text.ui.metatype}}
-                    select.form-control(id='char-metatype', ng-model='char.metatype.name', ng-options='name as text.metatype[name] for name in core.metatypes', ng-change='creation.setMetatype(char.metatype.name)')
-        h2 Priorities
+        h3
+        form.row
+            .form-group.col-lg-3
+                label(for='char-name') {{text.ui.name}}
+                input.form-control(id='char-name', ng-model='char.name', type='text', placeholder='{{text.ui.namePlaceholder}}')
+            .form-group.col-lg-3.col-lg-offset-1
+                label(for='char-metatype') {{text.ui.metatype}}
+                select.form-control(id='char-metatype', ng-model='char.metatype.name', ng-options='name as text.metatype[name] for name in core.metatypes', ng-change='creation.setMetatype(char.metatype.name)')
+
+        h3 {{text.creation.priority.priorities}}
         priority-table(creation='creation')
     tab(heading='{{text.ui.tab.attributes}}')
         attribute-table(modifier='creation', char='char')
-    tab(heading='{{text.ui.tab.magicOrResonance}}', ng-show="true")
-        {{char.magicType}}
+    tab(heading='{{magicOrResonanceTabName()}}')
+        h3
+        form.row
+            .form-group.col-lg-3
+                label(for='magic-type') {{text.ui.magicOrResonanceType}}
+                select.form-control(id='magic-type', ng-model='magicOrResonanceType', ng-change='updateMagicOrResonanceType(magicOrResonanceType)', ng-options='type as text.term.magicOrResonanceType[type] for type in priority.magicOrResonanceTypes')
+                    option(value='') -
+            .form-group.col-lg-2(ng-repeat="name in ['mag', 'res']", ng-show='char.attributes[name]')
+                label(for='attribute-value-{{name}}-2') {{text.attributes[name]}}
+                attribute-editor(id='attribute-value-{{name}}-2', char='char', modifier='creation', attribute='{{name}}')
     tab(heading='Debug')
         table.table(ng-controller="DebugController")
             tbody
@@ -43,3 +50,4 @@ tabset
                     td
                         button(class="btn btn-default btn-xs", ng-click="dump(creation)") creation
                         button(class="btn btn-default btn-xs", ng-click="dump(creation.char)") character
+                        button(class="btn btn-default btn-xs", ng-click="dumpScope()") scope

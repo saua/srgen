@@ -39,10 +39,18 @@ text.term =
   spells: 'spells'
   complexForm: 'complex Form'
   complexForms: 'complex Forms'
+  or: 'or'
+  magicOrResonanceType:
+    magician: 'Magician'
+    technomancer: 'Technomancer'
+    adept: 'Adept'
+    aspectedMagician: 'Aspected Magician'
+    mysticAdept: 'Mystic Adept'
 
 text.creation =
   priority:
     priority: 'Priority'
+    priorities: 'Priorities'
     points:
       specialAttributes: 'Special Attributes'
       attributes: 'Attributes'
@@ -50,11 +58,6 @@ text.creation =
       skillGroups: 'Skill Groups'
       karma: 'Karma'
       resources: 'Resources'
-    magicOrResource:
-      magician: 'Magician'
-      technomancer: 'Technomancer'
-      adept: 'Adept'
-      aspectedMagician: 'Aspected Magician'
     aspect:
       metatype: 'Metatype'
       attributes: 'Attributes'
@@ -69,6 +72,7 @@ text.ui =
   metatype: 'Metatype'
   limits: 'Limits'
   value: 'Value'
+  magicOrResonanceType: 'Magic or Resonance Type'
   tab:
     characterGeneration: 'Character Generation'
     attributes: 'Attributes'

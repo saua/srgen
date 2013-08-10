@@ -41,6 +41,9 @@ core.creation =
   priority:
     priorities: ['A', 'B', 'C', 'D', 'E']
     aspects: ['metatype', 'attributes', 'magic', 'skills', 'resources']
+    magicTypes: ['magician', 'mysticAdept', 'adept', 'aspectedMagician']
+    resonanceTypes: ['technomancer']
+    magicOrResonanceTypes: ['magician', 'mysticAdept', 'technomancer', 'adept', 'aspectedMagician']
     aspect:
       metatype:
         A: human: 9, elf: 8, dwarf: 7, ork: 7, troll: 5
@@ -60,12 +63,20 @@ core.creation =
             mag: 6
             magSkill: [5, 5]
             spell: 10
+          mysticAdept:
+            mag: 6
+            magSkill: [5, 5]
+            spell: 10
           technomancer:
             res: 6
             resSkill: [5, 5]
             complexForm: 5
         B:
           magician:
+            mag: 4
+            magSkill: [4, 4]
+            spell: 7
+          mysticAdept:
             mag: 4
             magSkill: [4, 4]
             spell: 7
@@ -81,6 +92,10 @@ core.creation =
             magSkillGroup: [4]
         C:
           magician:
+            mag: 3
+            magSkill: []
+            spell: 5
+          mysticAdept:
             mag: 3
             magSkill: []
             spell: 5
