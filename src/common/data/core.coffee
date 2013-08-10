@@ -6,9 +6,9 @@ core.attributes =
   special: ['ess', 'edg', 'mag', 'res']
 
 # the basic physical and mental attributes
-core.attributes.physicalMental = core.attributes.physical.concat(core.attributes.mental)
+core.attributes.physicalMental = core.attributes.physical.concat core.attributes.mental
 # attributes that every character/being has
-core.attributes.universal = core.attributes.physicalMental.concat('ess', 'edg')
+core.attributes.universal = core.attributes.physicalMental.concat 'ess', 'edg'
 
 limitsForMax = (obj)->
   for attr, val of obj

@@ -12,50 +12,46 @@ describe 'Priority Creation', ->
     expect(c.char.attributes.bod).toBeDefined()
     expect(c.char.attributes.bod.value.value).toBe null
 
-  describe 'CharacterModifier', ->
-    mod = null
-
+  describe 'Attributes', ->
     beforeEach ->
       c.setMetatype 'human'
-      mod = c.modifier
 
     it 'does not allow default attribute values to be decrease', ->
-      expect(mod.canDecreaseAttribute 'int').toBe false
+      expect(c.canDecreaseAttribute 'int').toBe false
 
     it 'allows default attribute values to be increase', ->
-      expect(mod.canIncreaseAttribute 'int').toBe true
+      expect(c.canIncreaseAttribute 'int').toBe true
 
     it 'increasing a attribute raises it', ->
-      mod.increaseAttribute 'int'
+      c.increaseAttribute 'int'
       expect(c.char.attributes.int.value.value).toBe 2
 
     it 'increasing a attribute twice raises it even further', ->
-      mod.increaseAttribute 'int'
-      mod.increaseAttribute 'int'
+      c.increaseAttribute 'int'
+      c.increaseAttribute 'int'
       expect(c.char.attributes.int.value.value).toBe 3
 
     it 'can not raise an attribute past its maximum', ->
-      mod.increaseAttribute 'int' #2
-      mod.increaseAttribute 'int' #3
-      mod.increaseAttribute 'int' #4
-      mod.increaseAttribute 'int' #5
-      mod.increaseAttribute 'int' #6
-      expect(mod.canIncreaseAttribute 'int').toBe false
+      c.increaseAttribute 'int', 5
+      expect(c.canIncreaseAttribute 'int').toBe false
+
+    it 'can not raise an attribute past its maximum, all at once', ->
+      expect(c.canIncreaseAttribute 'int', 6).toBe false
 
     it 'decreasing an increased attribute lowers it', ->
-      mod.increaseAttribute 'int'
-      mod.decreaseAttribute 'int'
+      c.increaseAttribute 'int'
+      c.decreaseAttribute 'int'
       expect(c.char.attributes.int.value.value).toBe 1
 
     it 'increases used attribute points when increasing an attribute', ->
       attributePoints = c.points.attributes.used
-      mod.increaseAttribute 'int'
+      c.increaseAttribute 'int'
       expect(c.points.attributes.used).toBe attributePoints+1
 
     it 'resets used attribute points when decreasing an attribute', ->
       attributePoints = c.points.attributes.used
-      mod.increaseAttribute 'int'
-      mod.decreaseAttribute 'int'
+      c.increaseAttribute 'int'
+      c.decreaseAttribute 'int'
       expect(c.points.attributes.used).toBe attributePoints
 
 
@@ -128,8 +124,7 @@ describe 'Priority Creation', ->
   describe 'State Handling', ->
     reloadState = ->
       state = c.exportState()
-      c = new cr.Creation
-      c.applyState state
+      c = new cr.Creation state
 
     it 'can handle the initial state', ->
       reloadState()
@@ -160,3 +155,9 @@ describe 'Priority Creation', ->
       c.setResonanceType 'technomancer'
       reloadState()
       expect(c.char.resonanceType.name).toBe 'technomancer'
+
+    it 'remembers attribute points', ->
+      c.setMetatype 'human'
+      c.increaseAttribute 'int'
+      reloadState()
+      expect(c.char.attributes.int.value.value).toBe 2

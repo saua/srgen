@@ -111,11 +111,11 @@ module.directive 'prioTableSkills', ['$parse', ($parse) ->
 
 module.controller 'PriorityCreationController', ['$scope', 'core', ($scope, core) ->
   $scope.priority = core.creation.priority
-  $scope.creation = new creation.Creation
   creationState = localStorage.getItem('creation')
   if creationState?
-    $scope.creation.applyState(angular.fromJson(creationState))
+    $scope.creation = new creation.Creation angular.fromJson(creationState)
   else
+    $scope.creation = new creation.Creation
     $scope.creation.setMetatype 'human'
   $scope.char = $scope.creation.char
   $scope.prio = angular.copy $scope.creation.priority

@@ -7,46 +7,6 @@ basetypes = @basetypes ? require './basetypes'
 
 cp = core.creation.priority
 
-class CreationModifier extends character.CharacterModifier
-  constructor: (creation) ->
-    @creation = -> creation
-
-  getAttribute: (attrName) ->
-    @creation().char.attributes[attrName]
-
-  modAttribute: (attrName, modValue) ->
-    attrPath = "attributes.#{attrName}.value"
-    creation = @creation()
-    effect = creation.effects.get attrPath
-    if effect
-      effect.mod += modValue
-      creation.effects.reApplyEffects()
-    else
-      creation.effects.add attrPath, new basetypes.ModValue modValue
-    creation.points.attributes.used += modValue
-
-  decreaseAttribute: (attrName) ->
-    throw "Can't decrease #{attrName}!" if not @canDecreaseAttribute attrName
-    @modAttribute attrName, -1
-
-  increaseAttribute: (attrName) ->
-    throw "Can't increase #{attrName}!" if not @canIncreaseAttribute attrName
-    @modAttribute attrName, +1
-
-  canDecreaseAttribute: (attrName) ->
-    attr = @getAttribute attrName
-    return attr.value.value > attr.min.value
-
-  canIncreaseAttribute: (attrName) ->
-    attr = @getAttribute attrName
-    return attr.value.value < attr.max.value
-
-  attributeValueValid: (attrName) ->
-    return true if not attrName?
-    attr = @getAttribute attrName
-    return attr.min.value <= attr.value.value <= attr.max.value
-
-
 class CreationEffects extends basetypes.EffectsProvider
   constructor: (creation) ->
     super creation.char
@@ -59,8 +19,12 @@ class CreationEffects extends basetypes.EffectsProvider
   get: (path) ->
     @effects[path]
 
-class Creation
-  constructor: ->
+  reset: ->
+    @unApplyEffects()
+    @effects.splice(0, @effects.length)
+
+class Creation extends character.CharacterModifier
+  constructor: (state = null) ->
     @char = new character.Character
     @effects = new CreationEffects @
     @char.addEffectsProvider @effects
@@ -70,6 +34,7 @@ class Creation
       magic: null
       skills: null
       resources: null
+    @attributes  = {}
     defaultPoints = -> available: 0, used: 0
     @points =
       attributes: defaultPoints()
@@ -79,7 +44,8 @@ class Creation
       resources: defaultPoints()
       karma: available: 25, used: 0
     @metatype = null
-    @modifier = new CreationModifier @
+    if state
+      applyState @, state
 
   setMetatype: (name) ->
     @metatype = name
@@ -91,14 +57,6 @@ class Creation
     throw new Error "Invalid priority #{priority}" unless priority in cp.priorities
     return if @priority[aspect] == priority
     @priority[aspect] = priority
-    @applyPriorities()
-
-  setMagicType: (magicType) ->
-    @char.setMagicType magicType || null
-    @applyPriorities()
-
-  setResonanceType: (resonanceType) ->
-    @char.setResonanceType resonanceType || null
     @applyPriorities()
 
   applyPriorities: () ->
@@ -134,21 +92,64 @@ class Creation
     if resources?
       @points.resources.available = resources
 
+  setMagicType: (magicType) ->
+    @char.setMagicType magicType || null
+    @applyPriorities()
+
+  setResonanceType: (resonanceType) ->
+    @char.setResonanceType resonanceType || null
+    @applyPriorities()
+
+  modAttribute: (attrName, howMuch, reset = false) ->
+    attrPath = "attributes.#{attrName}.value"
+    effect = @effects.get attrPath
+    if effect
+      effect.mod += howMuch
+      @effects.reApplyEffects()
+    else
+      @effects.add attrPath, new basetypes.ModValue howMuch
+    @attributes[attrName] = (@attributes[attrName] || 0) + howMuch
+    @points.attributes.used += howMuch
+
+  decreaseAttribute: (attrName, howMuch = 1) ->
+    throw "Can't decrease #{attrName} by #{howMuch}!" if not @canDecreaseAttribute attrName, howMuch
+    @modAttribute attrName, -howMuch
+
+  increaseAttribute: (attrName, howMuch = 1) ->
+    throw "Can't increase #{attrName} by #{howMuch}!" if not @canIncreaseAttribute attrName, howMuch
+    @modAttribute attrName, +howMuch
+
+  canDecreaseAttribute: (attrName, howMuch = 1) ->
+    attr = @char.attributes[attrName]
+    return attr.value.value-howMuch >= attr.min.value
+
+  canIncreaseAttribute: (attrName, howMuch = 1) ->
+    attr = @char.attributes[attrName]
+    return attr.value.value+howMuch <= attr.max.value
+
+  attributeValueValid: (attrName) ->
+    return true if not attrName?
+    attr = @char.attributes[attrName]
+    return attr.min.value <= attr.value.value <= attr.max.value
+
   exportState: () ->
     priority: @priority
     metatype: @metatype
     name: @char.name
     magicType: @char.magicType?.name || null
     resonanceType: @char.resonanceType?.name || null
+    attributes: @attributes
 
-
-  applyState: (state) ->
-    @setMetatype state.metatype if state.metatype
+  applyState = (that, state) ->
+    that.setMetatype state.metatype if state.metatype
     for aspect, prio of state.priority
-      @setPriority aspect, prio if prio
-    @setMagicType state.magicType
-    @setResonanceType state.resonanceType
-    @char.name = state.name
+      that.setPriority aspect, prio if prio
+    that.setMagicType state.magicType
+    that.setResonanceType state.resonanceType
+    that.char.name = state.name
+    for name, value of state.attributes
+      that.increaseAttribute name, value
+
 
 do (exports = exports ? @creation = {}) ->
   exports.Creation = Creation
