@@ -133,6 +133,7 @@ class Creation extends character.CharacterModifier
   attributeValueValid: (attrName) ->
     return true if not attrName?
     attr = @char.attributes[attrName]
+    return true if not attr?
     return attr.min.value <= attr.value.value <= attr.max.value
 
   exportState: () ->

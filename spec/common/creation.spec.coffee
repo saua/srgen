@@ -57,6 +57,9 @@ describe 'Priority Creation', ->
     it 'can not raise magic attribute without magic', ->
       expect(c.canIncreaseAttribute 'mag').toBe false
 
+    it 'does not flag a failing maigc attribute as invalid', ->
+      expect(c.attributeValueValid 'mag').toBe true
+
   describe 'Metatype', ->
     it 'does not give special attributes to unknown metatypes', ->
       c.setPriority 'metatype', 'B'
