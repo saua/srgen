@@ -54,6 +54,8 @@ describe 'Priority Creation', ->
       c.decreaseAttribute 'int'
       expect(c.points.attributes.used).toBe attributePoints
 
+    it 'can not raise magic attribute without magic', ->
+      expect(c.canIncreaseAttribute 'mag').toBe false
 
   describe 'Metatype', ->
     it 'does not give special attributes to unknown metatypes', ->
@@ -64,6 +66,17 @@ describe 'Priority Creation', ->
       c.setMetatype 'human'
       c.setPriority 'metatype', 'B'
       expect(c.points.specialAttributes.available).toBe 7
+
+    it 'gives new minimum values to non-humans', ->
+      c.setMetatype 'dwarf'
+      expect(c.char.attributes.bod.min.value).toBe 3
+      expect(c.char.attributes.bod.value.value).toBe 3
+
+    it 'adapts attribute values when switching metataype', ->
+      c.setMetatype 'human'
+      c.increaseAttribute 'bod'
+      c.setMetatype 'dwarf'
+      expect(c.char.attributes.bod.value.value).toBe 4
 
   describe 'Attributes', ->
     it 'does not give attribute points without priority', ->

@@ -12,7 +12,8 @@ getPath = (obj, path) ->
   result
 
 class Effect
-  constructor: () ->
+  constructor: (priority = 1000) ->
+    @priority = priority
   apply: (target) ->
     throw new Error 'apply method must be implemented!'
   unApply: (target) ->
@@ -36,6 +37,7 @@ class EffectTarget
 
   recalc: ->
     @errors.splice 0, @errors.length
+    @effects.sort (a,b) -> a.priority - b.priority
     @value = null
     for e in @effects
       e.apply this
@@ -47,6 +49,8 @@ class EffectTarget
 
 class InitialValue extends Effect
   constructor: (@value) ->
+    super(0)
+
   apply: (target) ->
     if target.value != null
       target.addError 'can not set initial value twice!'
@@ -55,6 +59,8 @@ class InitialValue extends Effect
 
 class ModValue extends Effect
   constructor: (@mod) ->
+    super()
+
   apply: (target) ->
     if target.value == null
       target.addError 'can not apply modified without initial value'

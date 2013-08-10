@@ -109,7 +109,10 @@ class Creation extends character.CharacterModifier
     else
       @effects.add attrPath, new basetypes.ModValue howMuch
     @attributes[attrName] = (@attributes[attrName] || 0) + howMuch
-    @points.attributes.used += howMuch
+    if attrName in core.attributes.special
+      @points.specialAttributes.used += howMuch
+    else
+      @points.attributes.used += howMuch
 
   decreaseAttribute: (attrName, howMuch = 1) ->
     throw "Can't decrease #{attrName} by #{howMuch}!" if not @canDecreaseAttribute attrName, howMuch
@@ -121,11 +124,11 @@ class Creation extends character.CharacterModifier
 
   canDecreaseAttribute: (attrName, howMuch = 1) ->
     attr = @char.attributes[attrName]
-    return attr.value.value-howMuch >= attr.min.value
+    return attr? && attr.value.value-howMuch >= attr.min.value
 
   canIncreaseAttribute: (attrName, howMuch = 1) ->
     attr = @char.attributes[attrName]
-    return attr.value.value+howMuch <= attr.max.value
+    return attr? && attr.value.value+howMuch <= attr.max.value
 
   attributeValueValid: (attrName) ->
     return true if not attrName?
