@@ -25,6 +25,11 @@ main.controller 'MainController', [ '$rootScope', '$location', 'core', 'text', (
   $rootScope.text = text
 ]
 
+main.controller 'DebugController', [ '$scope', ($scope) ->
+  $scope.dump = (obj) ->
+    console.dir obj
+]
+
 main.config ['$routeProvider', '$locationProvider', ($routeProvider, $locationProvider) ->
   $locationProvider.html5Mode true
   $routeProvider.when '/', {

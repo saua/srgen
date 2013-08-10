@@ -30,10 +30,16 @@ tabset
         priority-table(creation='creation')
     tab(heading='{{text.ui.tab.attributes}}')
         attribute-table(modifier='creation', char='char')
-    tab(heading='{{text.ui.tab.magicOrResonance}}', disabled="'true'")
+    tab(heading='{{text.ui.tab.magicOrResonance}}', ng-show="true")
+        {{char.magicType}}
     tab(heading='Debug')
-        table.table
+        table.table(ng-controller="DebugController")
             tbody
                 tr
-                    th creation
-                    td {{creation}}
+                    th creation state
+                    td {{creation.exportState()}}
+                tr
+                    th dump
+                    td
+                        button(class="btn btn-default btn-xs", ng-click="dump(creation)") creation
+                        button(class="btn btn-default btn-xs", ng-click="dump(creation.char)") character
