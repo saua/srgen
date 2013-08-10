@@ -13,8 +13,6 @@ getPath = (obj, path) ->
 
 class Effect
   constructor: () ->
-  checkApply: (target) ->
-    true
   apply: (target) ->
     throw new Error 'apply method must be implemented!'
   unApply: (target) ->
@@ -23,9 +21,9 @@ class Effect
 class EffectTarget
   constructor: () ->
     @effects = []
+    @errors = []
 
   addEffect: (effect) ->
-    effect.checkApply(@)
     @effects.push effect
     @recalc()
 
@@ -37,30 +35,36 @@ class EffectTarget
     @recalc()
 
   recalc: ->
+    @errors.splice 0, @errors.length
     @value = null
     for e in @effects
       e.apply this
     return # avoid building an array
+
+  addError: (err) ->
+    @errors.push(err)
 
 
 class InitialValue extends Effect
   constructor: (@value) ->
   apply: (target) ->
     if target.value != null
-      throw new Error 'can not set initial value twice!'
+      target.addError 'can not set initial value twice!'
+      return
     target.value = @value
 
 class ModValue extends Effect
   constructor: (@mod) ->
   apply: (target) ->
     if target.value == null
-      throw new Error 'can not apply modified without initial value'
+      target.addError 'can not apply modified without initial value'
+      return
     target.value += @mod
 
 class Value extends EffectTarget
   constructor: () ->
+    super
     @value = null
-    @effects = []
 
   toString: () ->
     "(#{@value})"

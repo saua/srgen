@@ -15,19 +15,27 @@ describe 'Effect', ->
 
   it 'sets the value when using InitialValue', ->
     v.addEffect new bt.InitialValue 1
-    expect(v.value).toBe(1)
+    expect(v.value).toBe 1
 
-  it 'throws when setting two initial values', ->
+  it 'does not have any errors without effects', ->
+    expect(v.errors).toEqual []
+
+  it 'reports an error when setting two initial values', ->
     v.addEffect new bt.InitialValue 1
-    expect(-> v.addEffect(new bt.InitialValue 2)).toThrow()
+    v.addEffect new bt.InitialValue 2
+    expect(v.errors).not.toEqual []
 
-  it 'throws if trying to use a mod effect without an initial', ->
-    expect(-> v.addEffect(new bt.ModValue 1)).toThrow()
+  it 'reports an error if trying to use a mod effect without an initial', ->
+    v.addEffect new bt.ModValue 1
+    expect(v.errors).not.toEqual []
 
   it 'applies the mod effect after an initial', ->
     v.addEffect new bt.InitialValue 1
     v.addEffect new bt.ModValue +1
     expect(v.value).toBe(2)
+
+  it 'accepts a mod effect without an inital', ->
+    v.addEffect new bt.ModValue +1
 
   it 'applies mod effects cummulatively', ->
     v.addEffect new bt.InitialValue 1
@@ -47,11 +55,11 @@ describe 'EffectsProvider', ->
     eb = new bt.EffectsProvider root
 
   it 'can set a simple value', ->
-    eb.effects["v"] = new bt.InitialValue 1
+    eb.effects['v'] = new bt.InitialValue 1
     eb.applyEffects()
     expect(root.v.value).toBe 1
 
   it 'can set a nested value', ->
-    eb.effects["n.nv"] = new bt.InitialValue 1
+    eb.effects['n.nv'] = new bt.InitialValue 1
     eb.applyEffects()
     expect(root.n.nv.value).toBe 1
