@@ -73,11 +73,14 @@ class MagicType extends basetypes.EffectsProvider
     # TODO: make this reflect essence
     @effects['attributes.mag.value'] = new basetypes.InitialValue 0
 
+  canUseAdeptPowers: -> false
+
 class Adept extends MagicType
   @magicType = 'adept'
   MagicType.registerMagicType(@)
   constructor: (target) ->
     super target
+  canUseAdeptPowers: -> true
 
 class Magician extends MagicType
   @magicType = 'magician'
@@ -96,6 +99,7 @@ class MysticAdept extends MagicType
   MagicType.registerMagicType(@)
   constructor: (target) ->
     super target
+  canUseAdeptPowers: -> true
 
 class ResonanceType extends basetypes.EffectsProvider
   @resonanceTypes = {}
@@ -159,6 +163,9 @@ class Character
     throw new Error "EffectProvider #{effectsProvider} is not in list!" if index == -1
     effectsProvider.unApplyEffects()
     @effectsProviders.splice index, 1
+
+  canUseAdeptPowers: () ->
+    @magicType? && @magicType.canUseAdeptPowers @
 
 class CharacterModifier
   notImplemented = ->

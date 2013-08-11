@@ -40,6 +40,7 @@ text.term =
   complexForm: 'complex Form'
   complexForms: 'complex Forms'
   or: 'or'
+  adeptPowers: 'Adept Powers'
   magicOrResonanceType:
     magician: 'Magician'
     technomancer: 'Technomancer'

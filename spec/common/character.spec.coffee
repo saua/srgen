@@ -39,6 +39,12 @@ describe 'Character', ->
       char.setMagicType 'aspectedMagician'
       expectAttribute 'mag', 0
 
+    describe 'Types', ->
+
+      it 'allows adepts to purchase powers', ->
+        char.setMagicType 'adept'
+        expect(char.canUseAdeptPowers()).toBe true
+
   describe 'Resonance', ->
     it 'does not allow wrong resonance type to be set', ->
       expect(-> char.setResonanceType 'frobnicator').toThrow()

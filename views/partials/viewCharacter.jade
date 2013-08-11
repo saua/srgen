@@ -31,7 +31,9 @@ tabset
                 .form-group(ng-repeat="name in ['mag', 'res']", ng-show='char.attributes[name]')
                     label(for='attribute-value-{{name}}-2') {{text.attributes[name]}}
                     attribute-editor(id='attribute-value-{{name}}-2', char='char', modifier='creation', attribute='{{name}}')
-            points-table.col-lg-3.col-sm-3.col-6.col-offset-4(creation='creation', points='specialAttributes')
+            points-table.col-lg-3.col-sm-3.col-6.col-offset-4(creation='creation', points='specialAttributes,powerPoints')
+        .row(ng-show='char.canUseAdeptPowers()')
+            h3 {{text.term.adeptPowers}} TODO
     tab(heading='Debug')
         table.table(ng-controller="DebugController")
             tbody

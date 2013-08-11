@@ -144,6 +144,9 @@ module.directive 'pointsTable', [ 'text', '$filter', (text, $filter) ->
 
     scope.availablePoints = (type) ->
       formatValue scope.creation.points[type].available, type
+
+    scope.existingPointTypes = ->
+      type for type in scope.pointTypes when scope.creation.points[type]?
 ]
 
 module.controller 'PriorityCreationController', ['$scope', 'core', ($scope, core) ->
