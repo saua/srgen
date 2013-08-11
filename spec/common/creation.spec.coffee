@@ -148,6 +148,11 @@ describe 'Priority Creation', ->
       c.setMagicType 'magician'
       expect(c.char.attributes.mag.value.value).toBe magicValue
 
+    it 'reduces magic to 0 when reducing the magic priority below a required level', ->
+      c.setMagicType 'magician'
+      c.setPriority 'magic', 'D'
+      expect(c.char.attributes.mag.value.value).toBe 0
+
   describe 'Resonance', ->
     beforeEach ->
       c = new cr.Creation
@@ -165,6 +170,11 @@ describe 'Priority Creation', ->
       c.setResonanceType 'technomancer'
       expect(c.char.attributes.res.value.value).toBe origResonanceValue
       expect(c.points.specialAttributes.used).toBe 0
+
+    it 'reduces resonance to 0 when reducing the resonance/magic priority below a required level', ->
+      c.setResonanceType 'technomancer'
+      c.setPriority 'magic', 'D'
+      expect(c.char.attributes.res.value.value).toBe 0
 
   describe 'Skills', ->
     it 'does not give skill points without priority', ->
