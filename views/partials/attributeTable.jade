@@ -1,39 +1,39 @@
-.row
+div
     .col-lg-4.col-sm-6(ng-repeat='attrs in [core.attributes.physical, core.attributes.mental]')
         table.table.table-hover.attribute-table
             thead
-                tr
+                tr(ng-class='{ "hidden-sm": $index == 1 }')
                     th.attr
                     th.value {{text.ui.value}}
                     th.limits {{text.ui.limits}}
             tbody
                 tr(ng-repeat='name in attrs')
-                    th(for='attribute-value-{{name}}')
+                    th.attr(for='attribute-value-{{name}}')
                         label(for='attribute-value-{{name}}') {{text.attributes[name]}}
-                    td
+                    td.value
                         attribute-editor(id='attribute-value-{{name}}', char='char', modifier='modifier', attribute='{{name}}')
                     td.limits {{char.attributes[name].min.value}}/{{char.attributes[name].max.value}}
     .col-lg-4.col-sm-6
         table.table.table-hover.attribute-table
             thead
-                tr
+                tr.visible-lg
                     th.attr
                     th.value {{text.ui.value}}
                     th.limits {{text.ui.limits}}
             tbody
                 tr(ng-repeat="name in ['mag','res']")
-                    th(for='attribute-value-{{name}}')
+                    th.attr(for='attribute-value-{{name}}')
                         label(for='attribute-value-{{name}}') {{text.attributes[name]}}
-                    td
+                    td.value
                         attribute-editor(id='attribute-value-{{name}}', char='char', modifier='modifier', attribute='{{name}}')
                     td.limits {{char.attributes[name].max.value}}
                 tr
-                    th {{text.attributes['ess']}}
-                    td.text-center
+                    th.attr {{text.attributes['ess']}}
+                    td.value.text-center
                     td.limits {{char.attributes['ess'].max.value}}
                 tr
-                    th(for='attribute-value-edg')
+                    th.attr(for='attribute-value-edg')
                         label(for='attribute-value-edg') {{text.attributes.edg}}
-                    td
+                    td.value
                         attribute-editor(id='attribute-value-edg', char='char', modifier='modifier', attribute='edg')
                     td.limits {{char.attributes.edg.min.value}}/{{char.attributes.edg.max.value}}

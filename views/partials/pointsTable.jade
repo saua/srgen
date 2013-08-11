@@ -1,0 +1,12 @@
+table.table.table-condensed
+    thead
+        tr
+            td
+            th.text-right(ng-repeat='type in pointTypes') {{pointsText[type]}}
+    tbody
+        tr
+            th Available
+            td.text-right(ng-repeat='type in pointTypes') {{availablePoints(type)}}
+        tr
+            th Used
+            td.text-right(ng-repeat='type in pointTypes') {{usedPoints(type)}}

@@ -120,6 +120,32 @@ module.directive 'prioTableSkills', ['$parse', ($parse) ->
     elem.append "#{obj.skills} (#{obj.skillGroups})"
 ]
 
+module.directive 'pointsTable', [ 'text', '$filter', (text, $filter) ->
+  restrict: 'E',
+  templateUrl: '/partials/pointsTable'
+  scope: {
+    creation: '='
+  }
+  link: (scope, elem, attr) ->
+    if attr.points?
+      scope.pointTypes = attr.points.split(',')
+    else
+      scope.pointTypes = ['specialAttributes', 'attributes', 'skills', 'skillGroups', 'karma', 'resources']
+    scope.pointsText = text.creation.priority.points
+
+    formatValue = (value, type) ->
+      if type == 'resources'
+        return $filter('currency')(value, '¥')
+      else
+        return value
+
+    scope.usedPoints = (type) ->
+      formatValue scope.creation.points[type].used, type
+
+    scope.availablePoints = (type) ->
+      formatValue scope.creation.points[type].available, type
+]
+
 module.controller 'PriorityCreationController', ['$scope', 'core', ($scope, core) ->
   $scope.priority = core.creation.priority
   creationState = localStorage.getItem('creation')
