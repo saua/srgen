@@ -80,7 +80,9 @@ text.ui =
     magic: 'Magic'
     resonance: 'Resonance'
 
-
+text.error =
+  invalidMagicType: 'This magic type is not valid with the selected magic/resonance priority.'
+  invalidResonanceType: 'This resonance type is not valid with the selected magic/resonance priority.'
 
 text.fn =
   smallNum: (n) ->

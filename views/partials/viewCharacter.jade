@@ -32,9 +32,11 @@ tabset
     tab(heading='{{magicOrResonanceTabName()}}')
         h3
         form.row
-            .form-group.col-lg-3
+            .form-group.col-lg-3(ng-class='{"has-error": !(validateMagicOrResonanceType().length==0)}')
                 label(for='magic-type') {{text.ui.magicOrResonanceType}}
-                select.form-control(id='magic-type', ng-model='magicOrResonanceType', ng-change='updateMagicOrResonanceType(magicOrResonanceType)', ng-options='type as text.term.magicOrResonanceType[type] for type in priority.magicOrResonanceTypes')
+                select.form-control(id='magic-type', ng-model='magicOrResonanceType',
+                    ng-change='updateMagicOrResonanceType(magicOrResonanceType)',
+                    ng-options='type as text.term.magicOrResonanceType[type] for type in priority.magicOrResonanceTypes')
                     option(value='') -
             .form-group.col-lg-2(ng-repeat="name in ['mag', 'res']", ng-show='char.attributes[name]')
                 label(for='attribute-value-{{name}}-2') {{text.attributes[name]}}

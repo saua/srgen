@@ -65,6 +65,12 @@ describe 'Priority Creation', ->
       expect(c.points.specialAttributes.used).toBe 1
       expect(c.points.attributes.used).toBe 0
 
+    it 'does not allow magic to be increased without a magic type', ->
+      expect(c.canIncreaseAttribute 'mag').toBe false
+
+    it 'does not allow resonance to be increased without a resonance type', ->
+      expect(c.canIncreaseAttribute 'res').toBe false
+
   describe 'Metatype', ->
     it 'does not give special attributes to unknown metatypes', ->
       c.setPriority 'metatype', 'B'
@@ -153,6 +159,15 @@ describe 'Priority Creation', ->
       c.setPriority 'magic', 'D'
       expect(c.char.attributes.mag.value.value).toBe 0
 
+    it 'reports the magic type as valid if the magic priority is high enough', ->
+      c.setMagicType 'magician'
+      expect(c.validateMagicType()).toEqual []
+
+    it 'reports the magic type as invalid if the magic priority is not high enough', ->
+      c.setMagicType 'magician'
+      c.setPriority 'magic', 'D'
+      expect(c.validateMagicType()).not.toEqual []
+
   describe 'Resonance', ->
     beforeEach ->
       c = new cr.Creation
@@ -175,6 +190,15 @@ describe 'Priority Creation', ->
       c.setResonanceType 'technomancer'
       c.setPriority 'magic', 'D'
       expect(c.char.attributes.res.value.value).toBe 0
+
+    it 'reports the resonance type as valid if the magic priority is high enough', ->
+      c.setResonanceType 'technomancer'
+      expect(c.validateResonanceType()).toEqual []
+
+    it 'reports the resonance type as invalid if the magic priority is not high enough', ->
+      c.setResonanceType 'technomancer'
+      c.setPriority 'magic', 'D'
+      expect(c.validateResonanceType()).not.toEqual []
 
   describe 'Skills', ->
     it 'does not give skill points without priority', ->

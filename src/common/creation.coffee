@@ -1,8 +1,10 @@
 #= require ./character
 #= require ./data/core
+#= require ./data/text
 #= require ./basetypes
 character = @character ? require './character'
 core = @core ? require './data/core'
+text = @text ? require './data/text'
 basetypes = @basetypes ? require './basetypes'
 
 cp = core.creation.priority
@@ -66,18 +68,19 @@ class Creation extends character.CharacterModifier
     @priority[aspect] = priority
     @applyPriorities()
 
-  applyPriorities: () ->
-    getAspectPriority = (aspect) => cp.aspect[aspect][@priority[aspect]]
+  getAspectPriority: (aspect) ->
+    cp.aspect[aspect][@priority[aspect]]
 
-    metatype = getAspectPriority 'metatype'
+  applyPriorities: () ->
+    metatype = @getAspectPriority 'metatype'
     if metatype?
       @points.specialAttributes.available = metatype[@metatype]
 
-    attributes = getAspectPriority 'attributes'
+    attributes = @getAspectPriority 'attributes'
     if attributes?
       @points.attributes.available = attributes
 
-    magic = getAspectPriority 'magic'
+    magic = @getAspectPriority 'magic'
     if magic?
       if @char.magicType?
         specificMagicAspect = magic[@char.magicType.name]
@@ -92,12 +95,12 @@ class Creation extends character.CharacterModifier
         @char.resonanceType.effects['attributes.res.value'] = new basetypes.InitialValue resonanceValue
         @char.resonanceType.applyEffects()
 
-    skills = getAspectPriority 'skills'
+    skills = @getAspectPriority 'skills'
     if skills?
       @points.skills.available = skills.skills
       @points.skillGroups.available = skills.skillGroups
 
-    resources = getAspectPriority 'resources'
+    resources = @getAspectPriority 'resources'
     if resources?
       @points.resources.available = resources
 
@@ -116,6 +119,14 @@ class Creation extends character.CharacterModifier
       @removeAttributeMod 'mag'
     @applyPriorities()
 
+  validateMagicType: ->
+    result = []
+    if @char.magicType
+      magic = @getAspectPriority 'magic'
+      if not (magic? and magic[@char.magicType.name]?)
+        result.push text.error.invalidMagicType
+    return result
+
   setResonanceType: (resonanceType) ->
     if @char.resonanceType?.name == resonanceType
       return
@@ -123,6 +134,14 @@ class Creation extends character.CharacterModifier
     if not resonanceType
       @removeAttributeMod 'res'
     @applyPriorities()
+
+  validateResonanceType: ->
+    result = []
+    if @char.resonanceType
+      resonance = @getAspectPriority 'magic'
+      if not (resonance? and resonance[@char.resonanceType.name]?)
+        result.push text.error.invalidResonanceType
+    return result
 
   modAttribute: (attrName, howMuch, reset = false) ->
     attrPath = "attributes.#{attrName}.value"

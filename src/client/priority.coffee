@@ -148,6 +148,9 @@ module.controller 'PriorityCreationController', ['$scope', 'core', ($scope, core
     $scope.creation.setMagicType if isMagic then mor else null
     $scope.creation.setResonanceType if isResonance then mor else null
 
+  $scope.validateMagicOrResonanceType = ->
+    $scope.creation.validateMagicType().concat $scope.creation.validateResonanceType()
+
   $scope.$watch 'creation.priority', ->
     $scope.creation.applyPriorities()
   , true
