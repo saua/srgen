@@ -36,7 +36,8 @@ tabset
                 label(for='magic-type') {{text.ui.magicOrResonanceType}}
                 select.form-control(id='magic-type', ng-model='magicOrResonanceType',
                     ng-change='updateMagicOrResonanceType(magicOrResonanceType)',
-                    ng-options='type as text.term.magicOrResonanceType[type] for type in priority.magicOrResonanceTypes')
+                    ng-options='type as text.term.magicOrResonanceType[type] for type in priority.magicOrResonanceTypes',
+                    tooltip='{{validateMagicOrResonanceType().join("\n")}}')
                     option(value='') -
             .form-group.col-lg-2(ng-repeat="name in ['mag', 'res']", ng-show='char.attributes[name]')
                 label(for='attribute-value-{{name}}-2') {{text.attributes[name]}}
