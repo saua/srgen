@@ -16,6 +16,13 @@ class CreationEffects extends basetypes.EffectsProvider
     @effects[path] = effect
     @applyEffects()
 
+  remove: (path, effect) ->
+    if @effects[path] != effect
+      throw new Error "Different effect #{@effects[path]} at #{path}, expected #{effect}!"
+    @unApplyEffects()
+    delete @effects[path]
+    @applyEffects()
+
   get: (path) ->
     @effects[path]
 
@@ -102,15 +109,19 @@ class Creation extends character.CharacterModifier
 
 
   setMagicType: (magicType) ->
-    if @char.magicType?.magicType == magicType
+    if @char.magicType?.name == magicType
       return
     @char.setMagicType magicType || null
+    if not magicType
+      @removeAttributeMod 'mag'
     @applyPriorities()
 
-  setMagicOrResonanceType: (magicOrResonanceType) ->
-
   setResonanceType: (resonanceType) ->
+    if @char.resonanceType?.name == resonanceType
+      return
     @char.setResonanceType resonanceType || null
+    if not resonanceType
+      @removeAttributeMod 'res'
     @applyPriorities()
 
   modAttribute: (attrName, howMuch, reset = false) ->
@@ -132,6 +143,18 @@ class Creation extends character.CharacterModifier
       @points.specialAttributes.used += howMuch
     else
       @points.attributes.used += howMuch
+
+  removeAttributeMod: (attrName) ->
+    attrPath = "attributes.#{attrName}.value"
+    effect = @effects.get attrPath
+    return if not effect
+    @effects.remove attrPath, effect
+    delete @attributes[attrName]
+    if attrName in core.attributes.special
+      @points.specialAttributes.used -= effect.mod
+    else
+      @points.attributes.used -= effect.mod
+
 
   decreaseAttribute: (attrName, howMuch = 1) ->
     throw "Can't decrease #{attrName} by #{howMuch}!" if not @canDecreaseAttribute attrName, howMuch

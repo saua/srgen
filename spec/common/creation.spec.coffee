@@ -60,6 +60,11 @@ describe 'Priority Creation', ->
     it 'does not flag a failing maigc attribute as invalid', ->
       expect(c.attributeValueValid 'mag').toBe true
 
+    it 'uses special attribute points to increase edge', ->
+      c.increaseAttribute 'edg'
+      expect(c.points.specialAttributes.used).toBe 1
+      expect(c.points.attributes.used).toBe 0
+
   describe 'Metatype', ->
     it 'does not give special attributes to unknown metatypes', ->
       c.setPriority 'metatype', 'B'
@@ -126,6 +131,23 @@ describe 'Priority Creation', ->
       c.setMagicType null
       expect(c.char.attributes.mag).toBeUndefined()
 
+    it 'resets the magic attribute when removing the magic type', ->
+      c.setMagicType 'magician'
+      origMagicValue = c.char.attributes.mag.value.value
+      c.increaseAttribute 'mag'
+      c.setMagicType null
+      c.setMagicType 'magician'
+      expect(c.char.attributes.mag.value.value).toBe origMagicValue
+      expect(c.points.specialAttributes.used).toBe 0
+
+    it 'does not reset magic attribute when switching between magic types', ->
+      c.setMagicType 'magician'
+      c.increaseAttribute 'mag'
+      magicValue = c.char.attributes.mag.value.value
+      c.setMagicType 'adept'
+      c.setMagicType 'magician'
+      expect(c.char.attributes.mag.value.value).toBe magicValue
+
   describe 'Resonance', ->
     beforeEach ->
       c = new cr.Creation
@@ -134,6 +156,15 @@ describe 'Priority Creation', ->
     it 'gives 4 resonance when selecting technomancer on priority B', ->
       c.setResonanceType 'technomancer'
       expect(c.char.attributes.res.value.value).toBe 4
+
+    it 'resets the resonance attribute when removing the resonance type', ->
+      c.setResonanceType 'technomancer'
+      origResonanceValue = c.char.attributes.res.value.value
+      c.increaseAttribute 'res'
+      c.setResonanceType null
+      c.setResonanceType 'technomancer'
+      expect(c.char.attributes.res.value.value).toBe origResonanceValue
+      expect(c.points.specialAttributes.used).toBe 0
 
   describe 'Skills', ->
     it 'does not give skill points without priority', ->
