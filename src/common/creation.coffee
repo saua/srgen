@@ -43,7 +43,7 @@ class Creation extends character.CharacterModifier
       magic: null
       skills: null
       resources: null
-    @attributes  = {}
+    @attributeMods  = {}
     defaultPoints = -> available: 0, used: 0
     @points =
       attributes: defaultPoints()
@@ -107,7 +107,7 @@ class Creation extends character.CharacterModifier
     # re-apply point mods
     @points.attributes.used = 0
     @points.specialAttributes.used = 0
-    for name, value of @attributes
+    for name, value of @attributeMods
       @modAttribute name, value, true
 
 
@@ -156,7 +156,7 @@ class Creation extends character.CharacterModifier
       @effects.add attrPath, new basetypes.ModValue howMuch
 
     if not reset
-      @attributes[attrName] = (@attributes[attrName] || 0) + howMuch
+      @attributeMods[attrName] = (@attributeMods[attrName] || 0) + howMuch
 
     if attrName in core.attributes.special
       @points.specialAttributes.used += howMuch
@@ -168,7 +168,7 @@ class Creation extends character.CharacterModifier
     effect = @effects.get attrPath
     return if not effect
     @effects.remove attrPath, effect
-    delete @attributes[attrName]
+    delete @attributeMods[attrName]
     if attrName in core.attributes.special
       @points.specialAttributes.used -= effect.mod
     else
@@ -209,7 +209,7 @@ class Creation extends character.CharacterModifier
     name: @char.name
     magicType: @char.magicType?.name || null
     resonanceType: @char.resonanceType?.name || null
-    attributes: @attributes
+    attributeMods: @attributeMods
 
   applyState = (that, state) ->
     that.setMetatype state.metatype if state.metatype
@@ -218,7 +218,7 @@ class Creation extends character.CharacterModifier
     that.setMagicType state.magicType
     that.setResonanceType state.resonanceType
     that.char.name = state.name
-    for name, value of state.attributes
+    for name, value of state.attributeMods
       that.modAttribute name, value
 
 
