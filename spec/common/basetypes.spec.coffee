@@ -4,6 +4,41 @@ describe 'Value', ->
   it 'has initial value null', ->
     expect(new bt.Value().value).toBe null
 
+  describe 'Listener', ->
+    v = null
+    called = 0
+    listener = -> called++
+
+    beforeEach ->
+      v = new bt.Value
+      called = 0
+
+    it 'allows listeners to be added', ->
+      expect(-> v.addListener listener).not.toThrow()
+
+    it 'calls the listener when the value changes', ->
+      v.addListener listener
+      v.addEffect new bt.InitialValue 1
+      expect(called).toBe 1
+
+    it 'does not matter how often the same listener is added', ->
+      v.addListener listener
+      v.addListener listener
+      v.addEffect new bt.InitialValue 1
+      expect(called).toBe 1
+
+    it 'does not call the listener when the value does not change', ->
+      v.addEffect new bt.InitialValue 1
+      v.addListener listener
+      v.addEffect new bt.ModValue +0
+      expect(called).toBe 0
+
+    it 'does call the listener when the value changes', ->
+      v.addEffect new bt.InitialValue 1
+      v.addListener listener
+      v.addEffect new bt.ModValue +1
+      expect(called).toBe 1
+
 describe 'Effect', ->
   v = null
 
@@ -42,6 +77,37 @@ describe 'Effect', ->
     v.addEffect new bt.ModValue +1
     v.addEffect new bt.ModValue +1
     expect(v.value).toBe 3
+
+  describe 'CalculatedEffect', ->
+    cv = null
+    v2 = null
+
+    beforeEach ->
+      v.addEffect new bt.InitialValue 0
+      cv = new bt.CalculatedEffect
+      cv.calculate = (target) ->
+        @registerWith v
+        return v.value
+      v2 = new bt.Value
+
+    it 'initially calculates correctly', ->
+      v2.addEffect cv
+      expect(v2.value).toBe v.value
+
+    it 'follows changes to the listened-upon value', ->
+      v2.addEffect cv
+      v.addEffect new bt.ModValue +1
+      expect(v2.value).toBe v.value
+
+    it 'can be used to modify a value', ->
+      v2.addEffect new bt.InitialValue 1
+      cv.calculate = (target) ->
+        @registerWith v
+        return target.value + v.value
+      v2.addEffect cv
+      expect(v2.value).toBe 1+v.value
+      v.addEffect new bt.ModValue +1
+      expect(v2.value).toBe 1+v.value
 
 describe 'EffectsProvider', ->
   root = null

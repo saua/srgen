@@ -44,7 +44,6 @@ class EffectTarget
   recalc: ->
     @errors.splice 0, @errors.length
     @effects.sort (a,b) -> a.priority - b.priority
-    @value = null
     for e in @effects
       e.apply this
     return # avoid building an array
@@ -73,10 +72,61 @@ class ModValue extends Effect
       return
     target.value += @mod
 
+class CalculatedEffect extends Effect
+  constructor: ->
+    super
+    @listener = => @dependentChanged arguments...
+
+  apply: (target) ->
+    if not @target?
+      @target = -> target
+    else if @target() != target
+      throw new Error "#{@} can only be applied to one value!"
+    target.value = @calculate(target)
+
+  registerWith: (dependent) ->
+    dependent.addListener @listener
+
+  dependentChanged: (dependent) ->
+    if @target?
+      @target().recalc()
+
+  calculate: (target) ->
+    target.addError "calculate not implemented on #{@}"
+    return
+
+
 class Value extends EffectTarget
   constructor: () ->
     super
     @value = null
+
+  recalc: ->
+    originalValue = @value
+    @value = null
+    super
+    if originalValue != @value
+      @notifyListeners()
+
+  notifyListeners: ->
+    if not @listeners?
+      return
+    for listener in @listeners()
+      listener @
+
+  addListener: (listener) ->
+    if not @listeners?
+      listeners = []
+      @listeners = -> listeners
+    if @listeners().indexOf(listener) == -1
+      @listeners().push(listener)
+
+  removeListener: (listener) ->
+    if not @listeners?
+      return
+    index = @listeners().indexOf(listener)
+    if index != -1
+      @listeners().splice(index, 1)
 
   toString: () ->
     "(#{@value})"
@@ -110,5 +160,6 @@ do (exports = exports ? @basetypes = {}) ->
   exports.EffectTarget = EffectTarget
   exports.ModValue = ModValue
   exports.InitialValue = InitialValue
+  exports.CalculatedEffect = CalculatedEffect
   exports.Value = Value
   exports.EffectsProvider = EffectsProvider
