@@ -6,12 +6,11 @@ describe 'Value', ->
 
   describe 'Listener', ->
     v = null
-    called = 0
-    listener = -> called++
+    listener = null
 
     beforeEach ->
       v = new bt.Value
-      called = 0
+      listener = jasmine.createSpy('listener')
 
     it 'allows listeners to be added', ->
       expect(-> v.addListener listener).not.toThrow()
@@ -19,25 +18,25 @@ describe 'Value', ->
     it 'calls the listener when the value changes', ->
       v.addListener listener
       v.addEffect new bt.InitialValue 1
-      expect(called).toBe 1
+      expect(listener).toHaveBeenCalled()
 
     it 'does not matter how often the same listener is added', ->
       v.addListener listener
       v.addListener listener
       v.addEffect new bt.InitialValue 1
-      expect(called).toBe 1
+      expect(listener).toHaveBeenCalled()
 
     it 'does not call the listener when the value does not change', ->
       v.addEffect new bt.InitialValue 1
       v.addListener listener
       v.addEffect new bt.ModValue +0
-      expect(called).toBe 0
+      expect(listener).not.toHaveBeenCalled()
 
     it 'does call the listener when the value changes', ->
       v.addEffect new bt.InitialValue 1
       v.addListener listener
       v.addEffect new bt.ModValue +1
-      expect(called).toBe 1
+      expect(listener).toHaveBeenCalled()
 
 describe 'Effect', ->
   v = null
