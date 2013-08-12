@@ -78,10 +78,8 @@ class CalculatedEffect extends Effect
     @listener = => @dependentChanged arguments...
 
   apply: (target) ->
-    if not @target?
+    if not @target? || @target() != target
       @target = -> target
-    else if @target() != target
-      throw new Error "#{@} can only be applied to one value!"
     target.value = @calculate(target)
 
   registerWith: (dependent) ->
@@ -139,7 +137,11 @@ class EffectsProvider
   applyEffects: ->
     for key, effect of @effects
       value = getPath @target(), key
-      value.addEffect effect
+      if Array.isArray(effect)
+        for e in effect
+          value.addEffect e
+      else
+        value.addEffect effect
     return # avoid building an array
 
   unApplyEffects: ->
@@ -147,8 +149,13 @@ class EffectsProvider
       value = getPath @target(), key
       if not value?
         continue
-      effect.unApply value
-      value.removeEffect effect
+      if Array.isArray effect
+        for e in effect
+          e.unApply value
+          value.removeEffect e
+      else
+        effect.unApply value
+        value.removeEffect effect
     return # avoid building an array
 
   reApplyEffects: ->

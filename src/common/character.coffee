@@ -48,10 +48,29 @@ class AddAttributeEffect extends basetypes.Effect
   constructor: (@attr) ->
 
   apply: (attributes) ->
-    attributes.addAttribute @attr
+    attributes.addAttribute @attr if not attributes[@attr]?
 
   unApply: (attributes) ->
-    attributes.removeAttribute @attr
+    attributes.removeAttribute @attr if attributes[@attr]?
+
+class ValueRoundedDownEffect extends basetypes.CalculatedEffect
+  constructor: (value, args...)->
+    super 2000, args...
+    @value = -> value
+    @registerWith value
+
+  calculate: (target) ->
+    return Math.floor(@value().value)
+
+class EssenceLossRoundedUpEffect extends basetypes.CalculatedEffect
+  constructor: (value, args...)->
+    super 2000, args...
+    @value = -> value
+    @registerWith value
+
+  calculate: (target) ->
+    loss = Math.ceil(6-@value().value)
+    return Math.max(0, target.value-loss)
 
 class MagicType extends basetypes.EffectsProvider
   @magicTypes = {}
@@ -67,11 +86,18 @@ class MagicType extends basetypes.EffectsProvider
   constructor: (target) ->
     super target
     @name = @.constructor.magicType
-    @effects['attributes'] = new AddAttributeEffect('mag')
+
+    essenceValue = target.attributes.ess.value
+    @initialMagicEffect = new basetypes.InitialValue 0
+
+    @effects['attributes'] = new AddAttributeEffect 'mag'
     @effects['attributes.mag.min'] = new basetypes.InitialValue 0
-    @effects['attributes.mag.max'] = new basetypes.InitialValue 6
-    # TODO: make this reflect essence
-    @effects['attributes.mag.value'] = new basetypes.InitialValue 0
+    @effects['attributes.mag.max'] = new ValueRoundedDownEffect essenceValue
+    @effects['attributes.mag.value'] = [ @initialMagicEffect, new EssenceLossRoundedUpEffect essenceValue ]
+
+  setInitialMagic: (newValue) ->
+    @initialMagicEffect.value = newValue
+    @target().attributes.mag.value.recalc()
 
   canUseAdeptPowers: -> false
 
@@ -113,11 +139,18 @@ class ResonanceType extends basetypes.EffectsProvider
   constructor: (target) ->
     super target
     @name = @.constructor.resonanceType
+
+    essenceValue = target.attributes.ess.value
+    @initialResonanceEffect = new basetypes.InitialValue 0
+
     @effects['attributes'] = new AddAttributeEffect('res')
     @effects['attributes.res.min'] = new basetypes.InitialValue 0
-    @effects['attributes.res.max'] = new basetypes.InitialValue 6
-    # TODO: make this reflect essence
-    @effects['attributes.res.value'] = new basetypes.InitialValue 0
+    @effects['attributes.res.max'] = new ValueRoundedDownEffect essenceValue
+    @effects['attributes.res.value'] = [ @initialResonanceEffect, new EssenceLossRoundedUpEffect essenceValue ]
+
+  setInitialResonance: (newValue) ->
+    @initialResonanceEffect.value = newValue
+    @target().attributes.res.value.recalc()
 
 class Technomancer extends ResonanceType
   @resonanceType = 'technomancer'

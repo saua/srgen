@@ -84,16 +84,10 @@ class Creation extends character.CharacterModifier
     if magic?
       if @char.magicType?
         specificMagicAspect = magic[@char.magicType.name]
-        @char.magicType.unApplyEffects()
-        magicValue = specificMagicAspect?.mag || 0
-        @char.magicType.effects['attributes.mag.value'] = new basetypes.InitialValue magicValue
-        @char.magicType.applyEffects()
+        @char.magicType.setInitialMagic specificMagicAspect?.mag || 0
       if @char.resonanceType?
         specificResonanceAspect = magic[@char.resonanceType.name]
-        @char.resonanceType.unApplyEffects()
-        resonanceValue = specificResonanceAspect?.res || 0
-        @char.resonanceType.effects['attributes.res.value'] = new basetypes.InitialValue resonanceValue
-        @char.resonanceType.applyEffects()
+        @char.resonanceType.setInitialResonance specificResonanceAspect?.res || 0
 
     skills = @getAspectPriority 'skills'
     if skills?

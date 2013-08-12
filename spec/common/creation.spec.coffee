@@ -1,4 +1,5 @@
 cr = require '../../src/common/creation'
+bt = require '../../src/common/basetypes'
 
 describe 'Priority Creation', ->
   c = null
@@ -103,6 +104,7 @@ describe 'Priority Creation', ->
   describe 'Magic', ->
     beforeEach ->
       c = new cr.Creation
+      c.setMetatype 'human'
       c.setPriority 'magic', 'B'
 
     it 'does not give magic or resonance without magic selection', ->
@@ -120,6 +122,11 @@ describe 'Priority Creation', ->
     it 'gives 5 magic when selecting aspected magician on priority B', ->
       c.setMagicType 'aspectedMagician'
       expect(c.char.attributes.mag.value.value).toBe 5
+
+    it 'gives 4 magic when selecting aspected magician on priority B and lowering essence by 0.1', ->
+      c.setMagicType 'aspectedMagician'
+      c.char.attributes.ess.value.addEffect new bt.ModValue -0.1
+      expect(c.char.attributes.mag.value.value).toBe 4
 
     it 'does not allow magic to be lowered below the initial value', ->
       c.setMagicType 'aspectedMagician'
@@ -171,6 +178,7 @@ describe 'Priority Creation', ->
   describe 'Resonance', ->
     beforeEach ->
       c = new cr.Creation
+      c.setMetatype 'human'
       c.setPriority 'magic', 'B'
 
     it 'gives 4 resonance when selecting technomancer on priority B', ->
