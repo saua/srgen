@@ -1,4 +1,4 @@
-# SRGEN
+# SRGen
 
 A Shadowrun 5 character generator.
 
