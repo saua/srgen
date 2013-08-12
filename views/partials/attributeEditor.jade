@@ -1,6 +1,6 @@
-.input-group(ng-class="{'has-error': !modifier.attributeValueValid(attribute) }")
-    .input-group-btn.no-select
+div(ng-class="{'has-error': modifier && !modifier.attributeValueValid(attribute), 'input-group': modifier }")
+    .input-group-btn.no-select(ng-show='modifier')
         button.btn.btn-default.no-select(ng-click='modifier.decreaseAttribute(attribute)', ng-disabled='!modifier.canDecreaseAttribute(attribute)') -
     input.form-control.text-center(type='text', ng-model='char.attributes[attribute].value.value', readonly)
-    .input-group-btn.no-select
+    .input-group-btn.no-select(ng-show='modifier')
         button.btn.btn-default.no-select(ng-click='modifier.increaseAttribute(attribute)', ng-disabled='!modifier.canIncreaseAttribute(attribute)') +
