@@ -120,16 +120,17 @@ describe 'EffectsProvider', ->
     eb = new bt.EffectsProvider root
 
   it 'can set a simple value', ->
-    eb.effects['v'] = new bt.InitialValue 1
+    eb.add 'v', new bt.InitialValue 1
     eb.applyEffects()
     expect(root.v.value).toBe 1
 
   it 'can apply multiple effects to a single value', ->
-    eb.effects['v'] = [ new bt.InitialValue(1), new bt.ModValue(1) ]
+    eb.add 'v', new bt.InitialValue(1)
+    eb.add 'v', new bt.ModValue(1)
     eb.applyEffects()
     expect(root.v.value).toBe 2
 
   it 'can set a nested value', ->
-    eb.effects['n.nv'] = new bt.InitialValue 1
+    eb.add 'n.nv', new bt.InitialValue 1
     eb.applyEffects()
     expect(root.n.nv.value).toBe 1

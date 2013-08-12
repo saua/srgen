@@ -19,11 +19,12 @@ class Metatype extends basetypes.EffectsProvider
     super(target)
     @data = copy(core.metatype[@name])
     for attr, limit of @data.attributes
-      @effects["attributes.#{attr}.min"] = new basetypes.InitialValue limit.min
-      @effects["attributes.#{attr}.max"] = new basetypes.InitialValue limit.max
-      @effects["attributes.#{attr}.value"] = new basetypes.InitialValue limit.min
-    @effects['attributes.ess.max'] = new basetypes.InitialValue 6
-    @effects['attributes.ess.value'] = new basetypes.InitialValue 6
+      if limit.min?
+        @add "attributes.#{attr}.min", new basetypes.InitialValue limit.min
+        @add "attributes.#{attr}.value", new basetypes.InitialValue limit.min
+      if limit.max?
+        @add "attributes.#{attr}.max", new basetypes.InitialValue limit.max
+    @add 'attributes.ess.value', new basetypes.InitialValue @data.attributes.ess.max
     return
 
 class Attribute
@@ -62,6 +63,16 @@ class ValueRoundedDownEffect extends basetypes.CalculatedEffect
   calculate: (target) ->
     return Math.floor(@value().value)
 
+class MagicValueEffect extends basetypes.CalculatedEffect
+  constructor: (char, args...)->
+    super 0, args...
+    @char = -> char
+
+  calculate: (target) ->
+    magic = @char().attributes.mag.value
+    @registerWith magic
+    return magic.value
+
 class EssenceLossRoundedUpEffect extends basetypes.CalculatedEffect
   constructor: (value, args...)->
     super 2000, args...
@@ -89,24 +100,25 @@ class MagicType extends basetypes.EffectsProvider
 
     essenceValue = target.attributes.ess.value
     @initialMagicEffect = new basetypes.InitialValue 0
-
-    @effects['attributes'] = new AddAttributeEffect 'mag'
-    @effects['attributes.mag.min'] = new basetypes.InitialValue 0
-    @effects['attributes.mag.max'] = new ValueRoundedDownEffect essenceValue
-    @effects['attributes.mag.value'] = [ @initialMagicEffect, new EssenceLossRoundedUpEffect essenceValue ]
+    @add 'attributes', new AddAttributeEffect 'mag'
+    @add 'attributes.mag.min', new basetypes.InitialValue 0
+    @add 'attributes.mag.max',  new ValueRoundedDownEffect essenceValue
+    @add 'attributes.mag.value', @initialMagicEffect
+    @add 'attributes.mag.value', new EssenceLossRoundedUpEffect essenceValue
 
   setInitialMagic: (newValue) ->
     @initialMagicEffect.value = newValue
     @target().attributes.mag.value.recalc()
-
-  canUseAdeptPowers: -> false
 
 class Adept extends MagicType
   @magicType = 'adept'
   MagicType.registerMagicType(@)
   constructor: (target) ->
     super target
-  canUseAdeptPowers: -> true
+    @add 'attributes', new AddAttributeEffect 'pp'
+    @add 'attributes.pp.min', new basetypes.InitialValue 0
+    @add 'attributes.pp.max', new MagicValueEffect target
+    @add 'attributes.pp.value', new MagicValueEffect target
 
 class Magician extends MagicType
   @magicType = 'magician'
@@ -125,7 +137,10 @@ class MysticAdept extends MagicType
   MagicType.registerMagicType(@)
   constructor: (target) ->
     super target
-  canUseAdeptPowers: -> true
+    @add 'attributes', new AddAttributeEffect 'pp'
+    @add 'attributes.pp.min', new basetypes.InitialValue 0
+    @add 'attributes.pp.max', new MagicValueEffect target
+    @add 'attributes.pp.value', new basetypes.InitialValue 0
 
 class ResonanceType extends basetypes.EffectsProvider
   @resonanceTypes = {}
@@ -143,10 +158,11 @@ class ResonanceType extends basetypes.EffectsProvider
     essenceValue = target.attributes.ess.value
     @initialResonanceEffect = new basetypes.InitialValue 0
 
-    @effects['attributes'] = new AddAttributeEffect('res')
-    @effects['attributes.res.min'] = new basetypes.InitialValue 0
-    @effects['attributes.res.max'] = new ValueRoundedDownEffect essenceValue
-    @effects['attributes.res.value'] = [ @initialResonanceEffect, new EssenceLossRoundedUpEffect essenceValue ]
+    @add 'attributes', new AddAttributeEffect('res')
+    @add 'attributes.res.min', new basetypes.InitialValue 0
+    @add 'attributes.res.max', new ValueRoundedDownEffect essenceValue
+    @add 'attributes.res.value', @initialResonanceEffect
+    @add 'attributes.res.value', new EssenceLossRoundedUpEffect essenceValue
 
   setInitialResonance: (newValue) ->
     @initialResonanceEffect.value = newValue
@@ -198,7 +214,7 @@ class Character
     @effectsProviders.splice index, 1
 
   canUseAdeptPowers: () ->
-    @magicType? && @magicType.canUseAdeptPowers @
+    @attributes.pp?
 
 class CharacterModifier
   notImplemented = ->

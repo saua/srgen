@@ -131,32 +131,33 @@ class Value extends EffectTarget
 
 class EffectsProvider
   constructor: (target) ->
-    @effects = {}
+    @effects = []
     @target = -> target
 
   applyEffects: ->
-    for key, effect of @effects
-      value = getPath @target(), key
-      if Array.isArray(effect)
-        for e in effect
-          value.addEffect e
-      else
-        value.addEffect effect
+    for [path, effect] in @effects
+      value = getPath @target(), path
+      value.addEffect effect
     return # avoid building an array
 
   unApplyEffects: ->
-    for key, effect of @effects
-      value = getPath @target(), key
+    for [path, effect] in @effects by -1
+      value = getPath @target(), path
       if not value?
         continue
-      if Array.isArray effect
-        for e in effect
-          e.unApply value
-          value.removeEffect e
-      else
-        effect.unApply value
-        value.removeEffect effect
+      effect.unApply value
+      value.removeEffect effect
     return # avoid building an array
+
+  add: (path, effect) ->
+    @effects.push [path, effect]
+
+  remove: (path, effect) ->
+    for [p, e], i in @effects
+      if p == path && e == effect
+        @effects.splice i, 1
+        return
+    return
 
   reApplyEffects: ->
     @unApplyEffects()

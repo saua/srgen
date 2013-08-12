@@ -175,6 +175,34 @@ describe 'Priority Creation', ->
       c.setPriority 'magic', 'D'
       expect(c.validateMagicType()).not.toEqual []
 
+    it 'can take away power points', ->
+      c.setMagicType 'adept'
+      c.setMagicType null
+      expect(c.char.attributes.pp).toBeUndefined()
+
+    it 'gives 0 powerpoints when selecting mystic adept on priority B', ->
+      c.setMagicType 'mysticAdept'
+      expect(c.char.attributes.pp.value.value).toBe 0
+
+    it 'allows powerpoints to be purchased for mystic adepts', ->
+      c.setMagicType 'mysticAdept'
+      c.increaseAttribute 'pp'
+      expect(c.char.attributes.pp.value.value).toBe 1
+      expect(c.points.karma.used).toBe 2
+
+    it 'resets powerpoints mods when switching away from mystic adept', ->
+      c.setMagicType 'mysticAdept'
+      c.increaseAttribute 'pp'
+      c.setMagicType 'adept'
+      expect(c.char.attributes.pp.value.value).toBe 6
+      expect(c.points.karma.used).toBe 0
+      c.setMagicType 'mysticAdept'
+      expect(c.char.attributes.pp.value.value).toBe 0
+
+    it 'gives 6 powerpoints when selecting adept on priority B', ->
+      c.setMagicType 'adept'
+      expect(c.char.attributes.pp.value.value).toBe 6
+
   describe 'Resonance', ->
     beforeEach ->
       c = new cr.Creation

@@ -13,24 +13,15 @@ class CreationEffects extends basetypes.EffectsProvider
   constructor: (creation) ->
     super creation.char
 
-  add: (path, effect) ->
+  add: ->
     @unApplyEffects()
-    @effects[path] = effect
+    super
     @applyEffects()
 
-  remove: (path, effect) ->
-    if @effects[path] != effect
-      throw new Error "Different effect #{@effects[path]} at #{path}, expected #{effect}!"
+  remove: ->
     @unApplyEffects()
-    delete @effects[path]
+    super
     @applyEffects()
-
-  get: (path) ->
-    @effects[path]
-
-  reset: ->
-    @unApplyEffects()
-    @effects.splice(0, @effects.length)
 
 class Creation extends character.CharacterModifier
   constructor: (state = null) ->
@@ -44,6 +35,7 @@ class Creation extends character.CharacterModifier
       skills: null
       resources: null
     @attributeMods  = {}
+    @attributeModEffects = {}
     defaultPoints = -> available: 0, used: 0
     @points =
       attributes: defaultPoints()
@@ -104,12 +96,15 @@ class Creation extends character.CharacterModifier
     for name, value of @attributeMods
       @modAttribute name, value, true
 
+    @effects.reApplyEffects()
+
 
   setMagicType: (magicType) ->
     if @char.magicType?.name == magicType
       return
     @char.setMagicType magicType || null
-    if not magicType
+    @removeAttributeMod 'pp'
+    if not @char.magicType
       @removeAttributeMod 'mag'
     @applyPriorities()
 
@@ -125,7 +120,7 @@ class Creation extends character.CharacterModifier
     if @char.resonanceType?.name == resonanceType
       return
     @char.setResonanceType resonanceType || null
-    if not resonanceType
+    if not @char.resonanceType
       @removeAttributeMod 'res'
     @applyPriorities()
 
@@ -138,35 +133,39 @@ class Creation extends character.CharacterModifier
     return result
 
   modAttribute: (attrName, howMuch, reset = false) ->
-    attrPath = "attributes.#{attrName}.value"
-    effect = @effects.get attrPath
+    effect = @attributeModEffects[attrName]
     if effect
       if reset
         effect.mod = howMuch
       else
         effect.mod += howMuch
-      @effects.reApplyEffects()
+      @char.attributes[attrName].value.recalc()
     else
-      @effects.add attrPath, new basetypes.ModValue howMuch
+      effect = new basetypes.ModValue howMuch
+      @attributeModEffects[attrName] = effect
+      @effects.add "attributes.#{attrName}.value", effect
 
-    if not reset
-      @attributeMods[attrName] = (@attributeMods[attrName] || 0) + howMuch
+    @attributeMods[attrName] = effect.mod
+    @applyAttributeCost attrName, howMuch
 
+  applyAttributeCost: (attrName, howMuch) ->
     if attrName in core.attributes.special
       @points.specialAttributes.used += howMuch
-    else
+    else if attrName in core.attributes.physicalMental
       @points.attributes.used += howMuch
+    else if attr = 'pp'
+      @points.karma.used += howMuch * 2
+
 
   removeAttributeMod: (attrName) ->
-    attrPath = "attributes.#{attrName}.value"
-    effect = @effects.get attrPath
+    effect = @attributeModEffects[attrName]
     return if not effect
+
+    attrPath = "attributes.#{attrName}.value"
     @effects.remove attrPath, effect
     delete @attributeMods[attrName]
-    if attrName in core.attributes.special
-      @points.specialAttributes.used -= effect.mod
-    else
-      @points.attributes.used -= effect.mod
+    delete @attributeModEffects[attrName]
+    @applyAttributeCost attrName, -effect.mod
 
 
   decreaseAttribute: (attrName, howMuch = 1) ->
@@ -181,11 +180,8 @@ class Creation extends character.CharacterModifier
     attr = @char.attributes[attrName]
     if not (attr? && attr.value.value-howMuch >= attr.min.value)
       return false
-    attrPath = "attributes.#{attrName}.value"
-    effect = @effects.get attrPath
+    effect = @attributeModEffects[attrName]
     return effect? && effect.mod >= howMuch
-
-
 
   canIncreaseAttribute: (attrName, howMuch = 1) ->
     attr = @char.attributes[attrName]
@@ -195,7 +191,11 @@ class Creation extends character.CharacterModifier
     return true if not attrName?
     attr = @char.attributes[attrName]
     return true if not attr?
-    return attr.min.value <= attr.value.value <= attr.max.value
+    if attr.min? && attr.value.value < attr.min.value
+      return false
+    if attr.max? && attr.value.value > attr.max.value
+      return false
+    return true
 
   exportState: () ->
     priority: @priority

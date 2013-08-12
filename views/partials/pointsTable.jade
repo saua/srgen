@@ -9,4 +9,4 @@ table.table.table-condensed
             td.text-right(ng-repeat='type in existingPointTypes()') {{availablePoints(type)}}
         tr
             th Used
-            td.text-right(ng-repeat='type in existingPointTypes()') {{usedPoints(type)}}
+            td.text-right(ng-repeat='type in existingPointTypes()', ng-class='{"text-danger": availablePoints(type) < usedPoints(type)}') {{usedPoints(type)}}

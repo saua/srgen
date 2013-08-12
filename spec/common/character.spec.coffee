@@ -75,6 +75,18 @@ describe 'Character', ->
         char.setMagicType 'adept'
         expect(char.canUseAdeptPowers()).toBe true
 
+      it 'adepts start with power points equal to their magic', ->
+        char.setMagicType 'adept'
+        char.magicType.setInitialMagic 1
+        expect(char.attributes.pp).toBeDefined()
+        expect(char.attributes.pp.value.value).toBe 1
+
+      it 'mystic adepts start with 0 power points', ->
+        char.setMagicType 'mysticAdept'
+        char.magicType.setInitialMagic 1
+        expect(char.attributes.pp).toBeDefined()
+        expect(char.attributes.pp.value.value).toBe 0
+
   describe 'Resonance', ->
     it 'does not allow wrong resonance type to be set', ->
       expect(-> char.setResonanceType 'frobnicator').toThrow()

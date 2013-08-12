@@ -13,6 +13,7 @@ text.attributes =
   edg: 'Edge'
   mag: 'Magic'
   res: 'Resonance'
+  pp: 'Power Points'
 
 text.metatype =
   human: 'Human'
