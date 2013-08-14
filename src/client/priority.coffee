@@ -183,8 +183,7 @@ module.controller 'PriorityCreationController', ['$scope', 'core', ($scope, core
   $scope.$watch 'creation.priority', ->
     $scope.creation.applyPriorities()
   , true
-  $scope.$watch 'creation', ->
-    creationState = $scope.creation.exportState()
-    localStorage.setItem('creation', angular.toJson(creationState))
+  $scope.$watch 'creation.exportState()', (newValue) ->
+    localStorage.setItem('creation', angular.toJson(newValue))
   , true
 ]
