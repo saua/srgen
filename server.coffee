@@ -10,8 +10,8 @@ if config.isDevelopment
   app.use express.errorHandler()
   app.use express.logger 'dev'
 
-app.locals.pretty = config.isDeveloment
-app.locals.useManifest = config.isProduction
+app.locals.pretty = config.web.prettyPrint
+app.locals.useManifest = config.web.useManifest
 
 app.set 'view engine', 'jade'
 
@@ -33,6 +33,11 @@ if config.web.useManifest
   app.get '/srgen.appcache', (req, res) ->
     result = '''
              CACHE MANIFEST
+
+             SETTINGS:
+             prefer-online
+
+             CACHE:
              /
 
              '''
@@ -60,9 +65,9 @@ if config.web.useManifest
     console.log result
     res.set 'Content-Type', 'text/cache-manifest'
     res.send result
-    # != js('lib/js/angular')
-    # != js('lib/js/ui-bootstrap-tpls-0.5.0')
-    # != js('client/app')
+else
+  app.get '/srgen.appcache', (req, res) ->
+    res.status(404).send 'No Manifest'
 
 app.get '*', index
 
