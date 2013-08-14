@@ -35,10 +35,10 @@ main.controller 'DebugController', [ '$scope', ($scope) ->
 main.config ['$routeProvider', '$locationProvider', ($routeProvider, $locationProvider) ->
   $locationProvider.html5Mode true
   $routeProvider.when '/', {
-    templateUrl: 'partials/viewWelcome.jade'
+    templateUrl: 'partials/viewWelcome'
   }
   $routeProvider.when '/character', {
-    templateUrl: 'partials/viewCharacter.jade'
+    templateUrl: 'partials/viewCharacter'
     controller: 'PriorityCreationController'
   }
   $routeProvider.otherwise redirectTo: '/'
