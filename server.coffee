@@ -29,6 +29,8 @@ app.get '/', index
 app.get '/partials/:name', (req, res) ->
   res.render "partials/#{req.params.name}"
 
+webPaths = [ '/character/' ]
+
 if config.web.useManifest
   app.get '/srgen.appcache', (req, res) ->
     result = '''
@@ -60,16 +62,16 @@ if config.web.useManifest
               /api
 
               FALLBACK:
-              / /
+
               '''
-    console.log result
+    result += ["#{wp} /\n" for wp in webPaths ].join('\n') + '\n'
     res.set 'Content-Type', 'text/cache-manifest'
     res.send result
 else
   app.get '/srgen.appcache', (req, res) ->
     res.status(404).send 'No Manifest'
 
-app.get '*', index
+app.get("#{wp}*", index) for wp in webPaths
 
 app.listen config.web.port, ->
   console.log "Listening on #{config.web.port}"
