@@ -6,19 +6,22 @@ config = require './src/server/config'
 app = express()
 env = app.get('env')
 
-app.set 'view engine', 'jade'
-
-
-app.use require('connect-assets')(src: path.join(__dirname, 'src'))
-# we want to handle full paths in connect-assets
-js.root = css.root = img.root = ''
-
-app.use app.router
-
 if env == 'development'
   app.use express.errorHandler()
   app.locals.pretty = true
-  express.logger 'dev'
+  app.use express.logger 'dev'
+
+app.set 'view engine', 'jade'
+
+asset = {}
+connectAssets = require('connect-assets')(src: path.join(__dirname, 'src'), helperContext: asset)
+app.use connectAssets
+asset.js.root = asset.css.root = asset.img.root = ''
+app.use (req, res, next) ->
+  res.locals asset
+  next()
+
+app.use app.router
 
 index = (req, res) -> res.render 'index'
 
