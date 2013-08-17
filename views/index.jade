@@ -7,14 +7,14 @@ head
     != css('lib/css/bootstrap')
     != css('lib/css/app')
 body(ng-controller='MainController')
-    .navbar.navbar-static-top
+    nav.navbar.navbar-static-top(role='navigation')
         .container
-            a.navbar-brand(ng-href='/') SRGen
+            .navbar-header
+                a.navbar-brand(ng-href='/') SRGen
             ul.nav.navbar-nav
                 li(ng-class='getNavClass("/character/")')
                     a(ng-href='/character/') Character
                 li {{$location}}
-
     .container
         ng-view
 
