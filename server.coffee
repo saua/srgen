@@ -52,7 +52,7 @@ if config.web.useManifest
     result += jsPaths 'lib/js/angular.js'
     result += jsPaths 'lib/js/ui-bootstrap-tpls-0.5.0.js'
     result += jsPaths 'client/app.js'
-    result += cssPath 'lib/css/bootstrap.less'
+    result += cssPath 'lib/css/bootstrap.css'
     result += cssPath 'lib/css/app.css'
     partials = fs.readdirSync path.join(__dirname, 'views', 'partials')
     result += "/partials/#{partial.substring(0,partial.lastIndexOf('.jade'))}\n" for partial in partials
