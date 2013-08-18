@@ -32,7 +32,8 @@ app.get '/partials/:name', (req, res) ->
 webPaths = [ '/character/' ]
 
 if config.web.useManifest
-  app.get '/srgen.appcache', (req, res) ->
+  additionalURLs = [ '//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700' ]
+  buildManifest = () ->
     result = '''
              CACHE MANIFEST
 
@@ -54,9 +55,11 @@ if config.web.useManifest
     result += jsPaths 'client/app.js'
     result += cssPath 'lib/css/bootstrap.css'
     result += cssPath 'lib/css/app.css'
-    partials = fs.readdirSync path.join(__dirname, 'views', 'partials')
-    result += "/partials/#{partial.substring(0,partial.lastIndexOf('.jade'))}\n" for partial in partials
+    partials = ( partial.substring(0,partial.lastIndexOf('.jade')) for partial in fs.readdirSync path.join(__dirname, 'views', 'partials') )
+    result += "/partials/#{partial}\n" for partial in partials
+    result += additionalURL + '\n' for additionalURL in additionalURLs
     result += '''
+
 
               NETWORK:
               /api
@@ -65,8 +68,12 @@ if config.web.useManifest
 
               '''
     result += ["#{wp} /\n" for wp in webPaths ].join('\n') + '\n'
+    return result
+  manifest = buildManifest()
+
+  app.get '/srgen.appcache', (req, res) ->
     res.set 'Content-Type', 'text/cache-manifest'
-    res.send result
+    res.send manifest
 else
   app.get '/srgen.appcache', (req, res) ->
     res.status(404).send 'No Manifest'
