@@ -3,6 +3,7 @@
 #= require ../common/creation
 #= require ../common/data/core
 #= require ../common/data/text
+#= require ../lib/js/angularytics.js
 
 core = @core
 text = @text
@@ -13,7 +14,7 @@ base.service 'core', ->
 base.service 'text', ->
   text
 
-main = angular.module 'srgen.main', ['srgen.base', 'srgen.priority', 'ui.bootstrap']
+main = angular.module 'srgen.main', ['srgen.base', 'srgen.priority', 'ui.bootstrap', 'angularytics']
 
 main.controller 'MainController', [ '$rootScope', '$location', 'core', 'text', ($rootScope, $location, core, text) ->
   $rootScope.getNavClass = (path) ->
@@ -32,7 +33,7 @@ main.controller 'DebugController', [ '$scope', ($scope) ->
     console.dir $scope.$parent
 ]
 
-main.config ['$routeProvider', '$locationProvider', ($routeProvider, $locationProvider) ->
+main.config [ '$routeProvider', '$locationProvider', 'AngularyticsProvider', ($routeProvider, $locationProvider, AngularyticsProvider) ->
   $locationProvider.html5Mode true
   $routeProvider.when '/', {
     templateUrl: '/partials/viewWelcome'
@@ -42,6 +43,16 @@ main.config ['$routeProvider', '$locationProvider', ($routeProvider, $locationPr
     controller: 'PriorityCreationController'
   }
   $routeProvider.otherwise redirectTo: '/'
+
+
+  if @ga
+    AngularyticsProvider.setEventHandlers ['GoogleUniversal']
+  else
+    AngularyticsProvider.setEventHandlers ['Console']
+]
+
+main.run [ 'Angularytics', (Angularytics) ->
+  Angularytics.init()
 ]
 
 angular.bootstrap document, ['srgen.main']
