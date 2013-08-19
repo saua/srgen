@@ -12,6 +12,7 @@ if config.isDevelopment
 
 app.locals.pretty = config.web.prettyPrint
 app.locals.useManifest = config.web.useManifest
+app.locals.config = config
 
 app.set 'view engine', 'jade'
 
@@ -23,16 +24,16 @@ app.locals(asset)
 
 app.use app.router
 
+webPaths = [ '/character/' ]
 index = (req, res) -> res.render 'index'
 
+# This is all our HTML
 app.get '/', index
+app.get("#{wp}*", index) for wp in webPaths
 app.get '/partials/:name', (req, res) ->
   res.render "partials/#{req.params.name}"
 
-webPaths = [ '/character/' ]
-
 if config.web.useManifest
-  additionalURLs = [ '//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700' ]
   buildManifest = () ->
     result = '''
              CACHE MANIFEST
@@ -57,16 +58,14 @@ if config.web.useManifest
     result += cssPath 'lib/css/app.css'
     partials = ( partial.substring(0,partial.lastIndexOf('.jade')) for partial in fs.readdirSync path.join(__dirname, 'views', 'partials') )
     result += "/partials/#{partial}\n" for partial in partials
-    result += additionalURL + '\n' for additionalURL in additionalURLs
-    result += '''
+    result += '//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700\n'
+    result += '\nNETWORK:\n/api\n'
+    # having this in network is non-ideal, but once it's cached the browser *should* use it in offline mode as well
+    result += '//themes.googleusercontent.com/static/fonts/\n'
+    if config.web.googleAnalytics.trackingId
+      result += '//www.google-analytics.com/\n//ssl.google-analytics.com/\n'
 
-
-              NETWORK:
-              /api
-
-              FALLBACK:
-
-              '''
+    result += '\nFALLBACK:\n'
     result += ["#{wp} /\n" for wp in webPaths ].join('\n') + '\n'
     return result
   manifest = buildManifest()
@@ -77,8 +76,6 @@ if config.web.useManifest
 else
   app.get '/srgen.appcache', (req, res) ->
     res.status(404).send 'No Manifest'
-
-app.get("#{wp}*", index) for wp in webPaths
 
 app.listen config.web.port, ->
   console.log "Listening on #{config.web.port}"
