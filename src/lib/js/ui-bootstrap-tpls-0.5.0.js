@@ -3402,7 +3402,7 @@ angular.module("template/tabs/pane.html", []).run(["$templateCache", function($t
 angular.module("template/tabs/tab.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/tabs/tab.html",
     "<li ng-class=\"{active: active, disabled: disabled}\">\n" +
-    "  <a ng-click=\"select()\" tab-heading-transclude>{{heading}}</a>\n" +
+    "  <a ng-click=\"select()\"  href=\"\" tab-heading-transclude>{{heading}}</a>\n" +
     "</li>\n" +
     "");
 }]);
@@ -3412,7 +3412,7 @@ angular.module("template/tabs/tabs.html", []).run(["$templateCache", function($t
     "<div class=\"tabbable\">\n" +
     "  <ul class=\"nav nav-tabs\">\n" +
     "    <li ng-repeat=\"pane in panes\" ng-class=\"{active:pane.selected}\">\n" +
-    "      <a ng-click=\"select(pane)\">{{pane.heading}}</a>\n" +
+    "      <a ng-click=\"select(pane)\" href=\"\">{{pane.heading}}</a>\n" +
     "    </li>\n" +
     "  </ul>\n" +
     "  <div class=\"tab-content\" ng-transclude></div>\n" +
