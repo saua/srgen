@@ -2,7 +2,7 @@ div
     .col-lg-4.col-sm-6(ng-repeat='attrs in [core.attributes.physical, core.attributes.mental]')
         table.table.table-hover.attribute-table
             thead
-                tr(ng-class='{ "hidden-sm": $index == 1 }')
+                tr(ng-class='{ "hidden-xs": $index == 1 }')
                     th.attr
                     th.value {{text.ui.value}}
                     th.limits {{text.ui.limits}}
