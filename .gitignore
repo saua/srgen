@@ -52,4 +52,4 @@ Desktop.ini
 .DS_Store
 
 # connect-asset stores built files here in production mode
-buildAssets/
+builtAssets/
