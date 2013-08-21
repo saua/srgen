@@ -21,4 +21,4 @@ project).
 There's a Travis CI build available:
 [![Build Status](https://secure.travis-ci.org/saua/srgen.png)](http://travis-ci.org/saua/srgen)
 
-Occasionally the current version is deployed at https://srgen.herokuapp.com/.
+Occasionally the current version is deployed at http://app.srgen.net/.
