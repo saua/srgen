@@ -1,9 +1,12 @@
+#= require ../lib/js/angular
+#= require ../lib/js/ui-bootstrap-tpls-0.5.0
+#= require ../lib/js/angularytics
+
 #= require ./priority
 #= require ../common/character
 #= require ../common/creation
 #= require ../common/data/core
 #= require ../common/data/text
-#= require ../lib/js/angularytics.js
 
 core = @core
 text = @text

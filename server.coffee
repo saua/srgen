@@ -51,8 +51,6 @@ if config.web.useManifest
       connectAssets.instance.compileCSS(css) + '\n'
     # currently this list needs to be updated by hand
     # maybe this could be parsed out of index.jade somehow, but it's not worth it yet.
-    result += jsPaths 'lib/js/angular.js'
-    result += jsPaths 'lib/js/ui-bootstrap-tpls-0.5.0.js'
     result += jsPaths 'client/app.js'
     result += cssPath 'lib/css/bootstrap.css'
     result += cssPath 'lib/css/app.css'
